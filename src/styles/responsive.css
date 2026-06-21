@@ -1,0 +1,112 @@
+/* ════════════════════════════════════════
+   FinOS — Responsive CSS
+   Mobile-first, works on all screen sizes
+   ════════════════════════════════════════ */
+
+/* ── Mobile overlay sidebar ── */
+@media (max-width: 768px) {
+  .app-shell { flex-direction: column; }
+
+  /* Sidebar becomes a slide-in drawer */
+  .sidebar {
+    position: fixed; top: 0; left: 0; bottom: 0;
+    z-index: 300; width: 260px;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    box-shadow: 4px 0 20px rgba(0,0,0,0.15);
+  }
+  .sidebar.open { transform: translateX(0); }
+
+  /* Overlay backdrop */
+  .sidebar-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.4); z-index: 299;
+  }
+  .sidebar.open ~ .sidebar-overlay,
+  .sidebar-overlay.open { display: block; }
+
+  /* Topbar becomes full width with menu button */
+  .topbar { padding: 0 12px; }
+  .topbar-breadcrumb-current { font-size: 14px; }
+
+  /* Main area takes full width */
+  .main-area { width: 100%; min-height: 100vh; }
+  .page-inner { padding: 14px; }
+
+  /* Hamburger button in topbar */
+  #menu-toggle {
+    display: flex; width: 34px; height: 34px;
+    border-radius: 8px; border: none; background: none;
+    cursor: pointer; align-items: center; justify-content: center;
+    color: var(--text-secondary); flex-shrink: 0;
+    transition: background 0.12s;
+  }
+  #menu-toggle:hover { background: var(--bg-subtle); }
+
+  /* Grids collapse */
+  .grid-4 { grid-template-columns: 1fr 1fr !important; gap: 10px; }
+  .grid-3 { grid-template-columns: 1fr 1fr !important; gap: 10px; }
+  .form-row { flex-direction: column !important; }
+  .form-row-3 { flex-direction: column !important; }
+
+  /* Page header stacks */
+  .page-header { flex-direction: column; gap: 10px; }
+  .page-header-actions { width: 100%; }
+  .page-header-actions .btn { width: 100%; justify-content: center; }
+
+  /* Table horizontal scroll */
+  .table-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .data-table { min-width: 600px; }
+  .col-actions { min-width: 80px; }
+
+  /* Modals full screen on mobile */
+  .modal { width: calc(100vw - 24px) !important; max-width: none; margin: 12px; }
+  .modal-overlay { align-items: flex-end; padding: 0; }
+  .modal { border-radius: 16px 16px 0 0 !important; }
+
+  /* Cards */
+  .card { border-radius: 10px; }
+  .card-body { padding: 14px; }
+  .card-header { padding: 12px 14px; }
+
+  /* Invoice detail actions wrap */
+  .invoice-actions-bar { flex-wrap: wrap; }
+
+  /* Tabs scroll horizontally */
+  .tabs { overflow-x: auto; white-space: nowrap; scrollbar-width: none; -webkit-overflow-scrolling: touch; flex-wrap: nowrap !important; }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab-item { flex-shrink: 0; }
+
+  /* Metric cards smaller */
+  .metric-card { padding: 14px; }
+  .metric-value { font-size: 20px; }
+
+  /* Login page */
+  .lp-left { display: none !important; }
+  .lp-right { width: 100% !important; padding: 24px !important; }
+
+  /* Hide non-essential topbar elements */
+  .topbar-search { display: none; }
+}
+
+/* ── Tablet (768–1024px) ── */
+@media (min-width: 769px) and (max-width: 1024px) {
+  :root { --sidebar-width: 190px; }
+  .page-inner { padding: 18px; }
+  .grid-4 { grid-template-columns: 1fr 1fr !important; }
+  #menu-toggle { display: none; }
+}
+
+/* ── Desktop (> 1024px) ── */
+@media (min-width: 1025px) {
+  #menu-toggle { display: none; }
+  .sidebar { transform: none !important; }
+}
+
+/* ── Print ── */
+@media print {
+  .sidebar, .topbar, .toast-container, .no-print { display: none !important; }
+  .main-area { width: 100%; }
+  .page-inner { padding: 0; }
+  .card { box-shadow: none; border: none; }
+}
