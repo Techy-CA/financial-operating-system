@@ -3,6 +3,7 @@ import Router from '../core/router.js';
 import { getNavItems } from '../core/roles.js';
 import Auth   from '../core/auth.js';
 import Toast  from './Toast.js';
+import Icon   from '../utils/icons.js';
 
 // F monogram SVG (matches logo)
 const F_SVG = `<svg width="18" height="18" viewBox="0 0 100 120" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -156,7 +157,7 @@ const Sidebar = {
             <div style="font-size:15px;font-weight:700;color:#0F172A;">Your companies</div>
             <div style="font-size:12px;color:#64748B;margin-top:1px;">${companies.length} compan${companies.length===1?'y':'ies'} · click to switch</div>
           </div>
-          <button onclick="document.getElementById('__co-modal').remove()" style="width:28px;height:28px;border-radius:8px;border:none;background:#F1F5F9;cursor:pointer;font-size:15px;color:#64748B;display:flex;align-items:center;justify-content:center;">✕</button>
+          <button onclick="document.getElementById('__co-modal').remove()" style="width:28px;height:28px;border-radius:8px;border:none;background:#F1F5F9;cursor:pointer;color:#64748B;display:flex;align-items:center;justify-content:center;">${Icon.x(14)}</button>
         </div>
 
         <!-- Company list -->
@@ -279,7 +280,7 @@ const Sidebar = {
       <div style="background:white;border-radius:16px;width:100%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,0.15);overflow:hidden;margin:20px;" onclick="event.stopPropagation()">
         <div style="padding:16px 18px 12px;border-bottom:1px solid #F1F5F9;display:flex;align-items:center;justify-content:space-between;">
           <div style="font-size:15px;font-weight:700;color:#0F172A;">Add new company</div>
-          <button onclick="document.getElementById('__co-modal').remove()" style="width:28px;height:28px;border-radius:8px;border:none;background:#F1F5F9;cursor:pointer;font-size:15px;color:#64748B;display:flex;align-items:center;justify-content:center;">✕</button>
+          <button onclick="document.getElementById('__co-modal').remove()" style="width:28px;height:28px;border-radius:8px;border:none;background:#F1F5F9;cursor:pointer;color:#64748B;display:flex;align-items:center;justify-content:center;">${Icon.x(14)}</button>
         </div>
         <div style="padding:20px;">
           <div style="margin-bottom:14px;">

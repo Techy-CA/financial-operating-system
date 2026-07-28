@@ -1,16 +1,5 @@
 import Auth from '../../core/auth.js';
 
-// The "F" monogram SVG — matches the uploaded logo
-const F_LOGO = `<svg width="28" height="28" viewBox="0 0 100 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M15 10 C15 10 70 10 85 10 C90 10 95 15 85 25 C75 35 30 50 30 50 C30 50 70 50 80 50 C85 50 88 55 80 63 C72 71 30 90 30 90 L30 115" stroke="url(#g1)" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-  <defs>
-    <linearGradient id="g1" x1="0" y1="0" x2="100" y2="120" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#60A5FA"/>
-      <stop offset="100%" stop-color="#1D4ED8"/>
-    </linearGradient>
-  </defs>
-</svg>`;
-
 const LoginPage = {
   init() {
     const c = document.getElementById('auth-container');
@@ -21,39 +10,43 @@ const LoginPage = {
 
       /* LEFT */
       .lp-left {
-        flex:1; background:#F0F4FF; display:flex; flex-direction:column;
+        flex:1; background:linear-gradient(160deg,#0B1220 0%,#101827 55%,#0D1420 100%);
+        display:flex; flex-direction:column;
         justify-content:space-between; padding:48px 56px; position:relative; overflow:hidden;
       }
       .lp-left-bg {
         position:absolute; inset:0;
-        background: radial-gradient(ellipse 70% 55% at 15% 90%, rgba(59,130,246,0.12) 0%, transparent 65%),
-                    radial-gradient(ellipse 50% 40% at 85% 10%, rgba(99,102,241,0.09) 0%, transparent 60%);
+        background: radial-gradient(ellipse 60% 45% at 10% 100%, rgba(59,130,246,0.14) 0%, transparent 65%),
+                    linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+        background-size: auto, 42px 42px, 42px 42px;
         pointer-events:none;
       }
 
       .lp-brand { display:flex; align-items:center; gap:10px; position:relative; z-index:1; }
-      .lp-brand-name { font-size:20px; font-weight:700; color:#0F172A; letter-spacing:-0.4px; }
+      .lp-brand-name { font-size:19px; font-weight:700; color:#F8FAFC; letter-spacing:-0.3px; }
 
       .lp-hero { position:relative; z-index:1; }
       .lp-h1 {
-        font-size:34px; font-weight:800; color:#0F172A; line-height:1.18;
-        letter-spacing:-1px; margin-bottom:14px; max-width:380px;
+        font-size:32px; font-weight:700; color:#F8FAFC; line-height:1.22;
+        letter-spacing:-0.6px; margin-bottom:14px; max-width:380px;
       }
-      .lp-sub { font-size:15px; color:#475569; line-height:1.65; max-width:340px; margin-bottom:32px; }
+      .lp-sub { font-size:14.5px; color:#94A3B8; line-height:1.65; max-width:340px; margin-bottom:36px; }
 
-      .lp-chips { display:flex; flex-direction:column; gap:8px; }
+      .lp-chips { display:flex; flex-direction:column; gap:13px; }
       .lp-chip {
-        display:flex; align-items:center; gap:9px;
-        font-size:13px; color:#334155;
+        display:flex; align-items:center; gap:11px;
+        font-size:13px; color:#CBD5E1;
       }
       .lp-chip-dot {
-        width:20px; height:20px; border-radius:6px;
-        background:white; display:flex; align-items:center; justify-content:center;
-        flex-shrink:0; box-shadow:0 1px 4px rgba(0,0,0,0.1);
+        width:16px; height:16px; border-radius:5px;
+        background:rgba(59,130,246,0.14); border:1px solid rgba(96,165,250,0.3);
+        display:flex; align-items:center; justify-content:center;
+        flex-shrink:0;
       }
-      .lp-chip-dot svg { width:11px; height:11px; }
+      .lp-chip-dot svg { width:9px; height:9px; }
 
-      .lp-footer { position:relative; z-index:1; font-size:12px; color:#94A3B8; }
+      .lp-footer { position:relative; z-index:1; font-size:11.5px; color:#64748B; padding-top:20px; border-top:1px solid rgba(255,255,255,0.08); }
 
       /* RIGHT */
       .lp-right {
@@ -62,12 +55,6 @@ const LoginPage = {
         padding:52px 48px; border-left:1px solid #E2E8F0; min-height:100vh;
       }
       .lp-form-logo { display:flex; align-items:center; gap:9px; margin-bottom:28px; }
-      .lp-form-logo-mark {
-        width:34px; height:34px; border-radius:9px;
-        background:linear-gradient(135deg,#3B82F6,#1D4ED8);
-        display:flex; align-items:center; justify-content:center;
-        box-shadow:0 3px 10px rgba(29,78,216,0.3);
-      }
       .lp-form-logo-name { font-size:17px; font-weight:700; color:#0F172A; }
 
       .lp-form-h2 { font-size:22px; font-weight:800; color:#0F172A; letter-spacing:-0.5px; margin-bottom:4px; }
@@ -126,9 +113,6 @@ const LoginPage = {
         <div class="lp-left-bg"></div>
 
         <div class="lp-brand">
-          <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#3B82F6,#1D4ED8);display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(29,78,216,0.28);">
-            ${F_LOGO}
-          </div>
           <span class="lp-brand-name">FinOS</span>
         </div>
 
@@ -145,7 +129,7 @@ const LoginPage = {
             ].map(t => `
               <div class="lp-chip">
                 <div class="lp-chip-dot">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="#1D4ED8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#60A5FA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                 </div>
                 ${t}
               </div>
@@ -153,13 +137,12 @@ const LoginPage = {
           </div>
         </div>
 
-        <div class="lp-footer">© 2026 FinOS Pvt. Ltd. &nbsp;·&nbsp; Secure. Compliant. B2B Finance Operations.</div>
+        <div class="lp-footer">© 2026 FinOS. All rights reserved.</div>
       </div>
 
       <!-- RIGHT PANEL — form -->
       <div class="lp-right">
         <div class="lp-form-logo">
-          <div class="lp-form-logo-mark">${F_LOGO}</div>
           <span class="lp-form-logo-name">FinOS</span>
         </div>
 
@@ -204,8 +187,9 @@ const LoginPage = {
           <button type="submit" class="lp-btn" id="btn-login">Sign In</button>
         </form>
 
-        <p class="lp-foot" style="margin-top:22px;border-top:1px solid #F1F5F9;padding-top:16px;font-size:11px;color:#CBD5E1;">
-          🔒 Secure sign-in &nbsp;·&nbsp; 🇮🇳 Made in India &nbsp;·&nbsp; GST compliant
+        <p class="lp-foot" style="margin-top:22px;border-top:1px solid #F1F5F9;padding-top:16px;font-size:11px;color:#94A3B8;display:flex;align-items:center;justify-content:center;gap:6px;">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Secure sign-in &nbsp;·&nbsp; Made in India &nbsp;·&nbsp; GST compliant
         </p>
       </div>
     </div>`;

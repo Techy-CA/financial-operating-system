@@ -69,7 +69,7 @@ async function send(params) {
       EMAILJS_TEMPLATE_ID,
       payload
     );
-    console.log('[EmailJS] ✅ Success', result.status, result.text);
+    console.log('[EmailJS] Success', result.status, result.text);
     return result;
   } catch (err) {
     // Provide specific error messages
@@ -115,9 +115,9 @@ const EmailService = {
       ? Math.floor((new Date(invoice.dueDate).getTime() - Date.now()) / 86400000)
       : 0;
     const notes = daysLeft < 0
-      ? `⚠️ This invoice is ${Math.abs(daysLeft)} day${Math.abs(daysLeft) !== 1 ? 's' : ''} overdue. Please settle immediately.`
+      ? `OVERDUE: This invoice is ${Math.abs(daysLeft)} day${Math.abs(daysLeft) !== 1 ? 's' : ''} overdue. Please settle immediately.`
       : daysLeft === 0
-        ? '🔴 This invoice is due TODAY. Please make payment immediately.'
+        ? 'DUE TODAY: This invoice is due today. Please make payment immediately.'
         : `Reminder: This invoice is due in ${daysLeft} day${daysLeft !== 1 ? 's' : ''}. Kindly arrange payment.`;
     return send({
       to_email:       invoice.customerEmail,
@@ -161,7 +161,7 @@ const EmailService = {
       invoice_amount: '₹10,000.00',
       balance_due:    '₹10,000.00',
       invoice_link:   location.href,
-      notes:          '🧪 Test email from FinOS. If received, EmailJS is working!',
+      notes:          'Test email from FinOS. If received, EmailJS is working!',
     });
   },
 };

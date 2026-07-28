@@ -2,6 +2,7 @@ import Router from '../../core/router.js';
 import Store  from '../../core/store.js';
 import Toast  from '../../components/Toast.js';
 import { initials, avatarColor } from '../../utils/formatters.js';
+import Icon from '../../utils/icons.js';
 
 const CustomersPage = {
   _list: [],
@@ -53,7 +54,7 @@ const CustomersPage = {
     const wrap = document.getElementById('cust-table-wrap');
     if (!wrap) return;
     if (list.length === 0) {
-      wrap.innerHTML = `<div class="empty-state"><div class="empty-state-icon">👥</div><h3>${this._list.length === 0 ? 'No customers yet' : 'No results'}</h3><p>${this._list.length === 0 ? 'Add your first customer to start creating invoices.' : 'Try a different search.'}</p>${this._list.length === 0 ? `<a href="#/customers/new" class="btn btn-primary">Add first customer</a>` : ''}</div>`;
+      wrap.innerHTML = `<div class="empty-state"><div class="empty-state-icon">${Icon.users(24)}</div><h3>${this._list.length === 0 ? 'No customers yet' : 'No results'}</h3><p>${this._list.length === 0 ? 'Add your first customer to start creating invoices.' : 'Try a different search.'}</p>${this._list.length === 0 ? `<a href="#/customers/new" class="btn btn-primary">Add first customer</a>` : ''}</div>`;
       return;
     }
     wrap.innerHTML = `<div class="table-wrapper"><table class="data-table">
@@ -77,9 +78,9 @@ const CustomersPage = {
             <td class="muted">${c.state || '—'}</td>
             <td class="col-actions">
               <div class="row-actions">
-                <a href="#/invoices/new?customerId=${c.id}" class="btn btn-ghost btn-icon btn-sm" title="New invoice">📄</a>
-                <a href="#/customers/${c.id}/edit" class="btn btn-ghost btn-icon btn-sm" title="Edit">✏️</a>
-                <button class="btn btn-ghost btn-icon btn-sm" onclick="CustomersPage.del('${c.id}','${(c.name||'').replace(/'/g, "\\'")}',this)" title="Delete" style="color:var(--color-danger);">🗑</button>
+                <a href="#/invoices/new?customerId=${c.id}" class="btn btn-ghost btn-icon btn-sm" title="New invoice">${Icon.fileText(14)}</a>
+                <a href="#/customers/${c.id}/edit" class="btn btn-ghost btn-icon btn-sm" title="Edit">${Icon.edit(14)}</a>
+                <button class="btn btn-ghost btn-icon btn-sm" onclick="CustomersPage.del('${c.id}','${(c.name||'').replace(/'/g, "\\'")}',this)" title="Delete" style="color:var(--color-danger);">${Icon.trash(14)}</button>
               </div>
             </td>
           </tr>`;

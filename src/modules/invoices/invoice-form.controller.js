@@ -5,6 +5,7 @@ import Store   from '../../core/store.js';
 import { calcInvoiceGST, amountInWords } from './gst-calculator.js';
 import { formatCurrency } from '../../utils/formatters.js';
 import { GST_RATE_OPTIONS } from '../../utils/constants.js';
+import Icon from '../../utils/icons.js';
 
 function clean(o){const r={};for(const[k,v]of Object.entries(o)){if(v!==undefined&&v!==null&&v!=='')r[k]=v;}return r;}
 
@@ -87,8 +88,8 @@ const InvoiceFormPage = {
               <button type="button" class="btn btn-secondary btn-sm" onclick="InvoiceFormPage.addItem()">+ Add line</button>
             </div>
             <!-- Product search hint -->
-            <div style="padding:8px 16px 0;font-size:12px;color:var(--text-tertiary);">
-              💡 Type in description to search your products/services
+            <div style="padding:8px 16px 0;font-size:12px;color:var(--text-tertiary);display:flex;align-items:center;gap:6px;">
+              ${Icon.bulb(13)} Type in description to search your products/services
             </div>
             <div class="table-wrapper">
               <table class="data-table">
@@ -117,9 +118,9 @@ const InvoiceFormPage = {
 
           <!-- Actions -->
           <div style="display:flex;gap:10px;flex-wrap:wrap;">
-            <button type="submit" id="btn-send" class="btn btn-primary btn-lg" data-action="sent">✉️ Save & mark sent</button>
-            <button type="submit" id="btn-draft" class="btn btn-secondary btn-lg" data-action="draft">💾 Save as draft</button>
-            <button type="button" class="btn btn-ghost btn-lg" onclick="InvoiceFormPage.previewPDF()">👁 Preview PDF</button>
+            <button type="submit" id="btn-send" class="btn btn-primary btn-lg" data-action="sent">${Icon.mail(15)} Save & mark sent</button>
+            <button type="submit" id="btn-draft" class="btn btn-secondary btn-lg" data-action="draft">${Icon.save(15)} Save as draft</button>
+            <button type="button" class="btn btn-ghost btn-lg" onclick="InvoiceFormPage.previewPDF()">${Icon.eye(15)} Preview PDF</button>
           </div>
         </form>
       </div>
@@ -325,7 +326,7 @@ const InvoiceFormPage = {
       // Log activity
       try{const{default:N}=await import('../../components/Notifications.js');await N.log('invoice',`Invoice ${payload.invoiceNumber||invId} ${action==='sent'?'sent':'saved as draft'}`);}catch(e){}
 
-      Toast.success(action==='sent'?'Invoice saved and marked as sent 📤':'Invoice saved as draft 💾');
+      Toast.success(action==='sent'?'Invoice saved and marked as sent':'Invoice saved as draft');
 
       // Auto-email when invoice is sent
       if(action==='sent'){
@@ -339,7 +340,7 @@ const InvoiceFormPage = {
               if(freshInv){
                 freshInv.customerEmail=custEmail;
                 await m.default.sendInvoice(freshInv);
-                Toast.success(`📧 Invoice emailed to ${custEmail}`);
+                Toast.success(`Invoice emailed to ${custEmail}`);
               }
             }catch(e){console.warn('[Email]',e.message);}
           });

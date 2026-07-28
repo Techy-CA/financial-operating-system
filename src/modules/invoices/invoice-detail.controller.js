@@ -4,6 +4,7 @@ import Toast   from '../../components/Toast.js';
 import Store   from '../../core/store.js';
 import { formatCurrency, formatDate } from '../../utils/formatters.js';
 import { INVOICE_STATUS_BADGE, INVOICE_STATUS_LABELS, PAYMENT_METHODS } from '../../utils/constants.js';
+import Icon from '../../utils/icons.js';
 
 function daysDue(d){return d?Math.floor((Date.now()-new Date(d).getTime())/86400000):0;}
 
@@ -63,14 +64,14 @@ const InvoiceDetailPage = {
         <option value="2">Modern Dark</option>
         <option value="3">Minimal Clean</option>
       </select>
-      <button class="btn btn-secondary btn-sm" onclick="InvoiceDetailPage.downloadPDF()">⬇️ PDF</button>
-      <button class="btn btn-secondary btn-sm" onclick="InvoiceDetailPage.copyLink()">🔗 Share</button>
+      <button class="btn btn-secondary btn-sm" onclick="InvoiceDetailPage.downloadPDF()">${Icon.download(14)} PDF</button>
+      <button class="btn btn-secondary btn-sm" onclick="InvoiceDetailPage.copyLink()">${Icon.link(14)} Share</button>
       <button class="btn btn-${hasEmail?'primary':'secondary'} btn-sm" onclick="InvoiceDetailPage.sendEmail()" title="${hasEmail?'Send invoice email':'Add customer email first'}">
-        📧 ${hasEmail?'Email invoice':'No email'}
+        ${Icon.mail(14)} ${hasEmail?'Email invoice':'No email'}
       </button>
-      ${inv.status!=='paid'?`<button class="btn btn-primary btn-sm" onclick="InvoiceDetailPage.openPayModal()">💰 Record payment</button>`:''}
-      <a href="#/invoices/${inv.id}/edit" class="btn btn-ghost btn-sm">✏️ Edit</a>
-      <button class="btn btn-ghost btn-sm" onclick="InvoiceDetailPage.delInvoice()" style="color:var(--color-danger);">🗑 Delete</button>
+      ${inv.status!=='paid'?`<button class="btn btn-primary btn-sm" onclick="InvoiceDetailPage.openPayModal()">${Icon.wallet(14)} Record payment</button>`:''}
+      <a href="#/invoices/${inv.id}/edit" class="btn btn-ghost btn-sm">${Icon.edit(14)} Edit</a>
+      <button class="btn btn-ghost btn-sm" onclick="InvoiceDetailPage.delInvoice()" style="color:var(--color-danger);">${Icon.trash(14)} Delete</button>
     </div>`;
   },
 
@@ -102,16 +103,16 @@ const InvoiceDetailPage = {
       return;
     }
     const btn=document.querySelector('[onclick*="sendEmail"]');
-    if(btn){btn.textContent='📧 Sending…';btn.disabled=true;}
+    if(btn){btn.textContent='Sending…';btn.disabled=true;}
     try{
       const{default:EmailSvc}=await import('../../services/email.service.js');
       await EmailSvc.sendInvoice(inv);
-      Toast.success(`✅ Invoice emailed to ${inv.customerEmail}`);
+      Toast.success(`Invoice emailed to ${inv.customerEmail}`);
     }catch(e){
       Toast.error('Email failed: '+e.message);
       console.error('[Email]',e);
     }finally{
-      if(btn){btn.textContent='📧 Email invoice';btn.disabled=false;}
+      if(btn){btn.textContent='Email invoice';btn.disabled=false;}
     }
   },
 
@@ -137,10 +138,10 @@ const InvoiceDetailPage = {
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px;">
         <div style="display:flex;align-items:center;gap:10px;">
           <span class="${INVOICE_STATUS_BADGE[inv.status]||'badge badge-neutral'} badge-dot" style="font-size:13px;padding:4px 12px;">${INVOICE_STATUS_LABELS[inv.status]||inv.status||'draft'}</span>
-          ${days>0?`<span style="font-size:12px;color:var(--color-danger);font-weight:600;">⚠ ${days} days overdue</span>`:''}
-          ${inv.customerEmail?`<span style="font-size:11px;color:var(--color-success);">📧 ${inv.customerEmail}</span>`:`<span style="font-size:11px;color:var(--color-warning);">⚠ No customer email · <a href="#/customers/${inv.customerId}/edit" style="color:var(--brand-primary);">Add email</a></span>`}
+          ${days>0?`<span style="font-size:12px;color:var(--color-danger);font-weight:600;display:inline-flex;align-items:center;gap:4px;">${Icon.alertTriangle(12)} ${days} days overdue</span>`:''}
+          ${inv.customerEmail?`<span style="font-size:11px;color:var(--color-success);display:inline-flex;align-items:center;gap:4px;">${Icon.mail(11)} ${inv.customerEmail}</span>`:`<span style="font-size:11px;color:var(--color-warning);display:inline-flex;align-items:center;gap:4px;">${Icon.alertTriangle(11)} No customer email · <a href="#/customers/${inv.customerId}/edit" style="color:var(--brand-primary);">Add email</a></span>`}
         </div>
-        <div>${inv.status!=='paid'?`Balance: <strong style="color:var(--color-warning);font-size:18px;">₹${formatCurrency(inv.balanceDue||0)}</strong>`:`<span style="color:var(--color-success);font-weight:700;">✓ Paid in full</span>`}</div>
+        <div>${inv.status!=='paid'?`Balance: <strong style="color:var(--color-warning);font-size:18px;">₹${formatCurrency(inv.balanceDue||0)}</strong>`:`<span style="color:var(--color-success);font-weight:700;display:inline-flex;align-items:center;gap:5px;">${Icon.check(13)} Paid in full</span>`}</div>
       </div>
 
       <!-- Invoice card -->
@@ -225,7 +226,7 @@ const InvoiceDetailPage = {
             ${company.bankAccountNo?`<span><strong>${company.bankAccountNo}</strong></span>`:''}
             ${company.bankIFSC?`<span>IFSC: <strong>${company.bankIFSC}</strong></span>`:''}
             ${company.upiId?`<span>UPI: <strong>${company.upiId}</strong></span>`:''}
-            ${company.razorpayLink?`<a href="${company.razorpayLink}" target="_blank" class="btn btn-success btn-sm" style="text-decoration:none;">💳 Pay online</a>`:''}
+            ${company.razorpayLink?`<a href="${company.razorpayLink}" target="_blank" class="btn btn-success btn-sm" style="text-decoration:none;">${Icon.creditCard(14)} Pay online</a>`:''}
           </div>`:''}
 
         ${inv.notes?`<div style="padding:12px 24px;border-top:1px solid var(--border-subtle);font-size:13px;color:var(--text-secondary);"><strong style="font-size:10px;text-transform:uppercase;letter-spacing:0.6px;color:var(--text-tertiary);">Notes</strong><br>${inv.notes}</div>`:''}
@@ -252,7 +253,7 @@ const InvoiceDetailPage = {
     document.getElementById('pay-modal').innerHTML=`
       <div class="modal-overlay" onclick="if(event.target===this)InvoiceDetailPage.closePayModal()">
         <div class="modal modal-sm">
-          <div class="modal-header"><h3>Record payment</h3><button class="modal-close" onclick="InvoiceDetailPage.closePayModal()">✕</button></div>
+          <div class="modal-header"><h3>Record payment</h3><button class="modal-close" onclick="InvoiceDetailPage.closePayModal()">${Icon.x(15)}</button></div>
           <div class="modal-body">
             <div class="form-group mb-4">
               <label class="form-label">Amount received <span class="required">*</span></label>
@@ -262,7 +263,7 @@ const InvoiceDetailPage = {
             <div class="form-group mb-4"><label class="form-label">Payment method</label><select class="select" id="pay-meth">${mOpts}</select></div>
             <div class="form-group mb-4"><label class="form-label">Payment date <span class="required">*</span></label><input class="input" type="date" id="pay-date" value="${today}" /></div>
             <div class="form-group mb-3"><label class="form-label">Reference / UTR</label><input class="input" type="text" id="pay-ref" placeholder="NEFT/UPI transaction ID" /></div>
-            ${this._inv.customerEmail?`<div style="background:var(--color-info-light);border:1px solid var(--color-info-mid);border-radius:8px;padding:9px 12px;font-size:12.5px;color:var(--color-info-text);">📧 Payment confirmation will be emailed to ${this._inv.customerEmail}</div>`:''}
+            ${this._inv.customerEmail?`<div style="background:var(--color-info-light);border:1px solid var(--color-info-mid);border-radius:8px;padding:9px 12px;font-size:12.5px;color:var(--color-info-text);display:flex;gap:7px;align-items:flex-start;">${Icon.mail(14)} <span>Payment confirmation will be emailed to ${this._inv.customerEmail}</span></div>`:''}
           </div>
           <div class="modal-footer">
             <button class="btn btn-secondary" onclick="InvoiceDetailPage.closePayModal()">Cancel</button>
@@ -295,7 +296,7 @@ const InvoiceDetailPage = {
       await DB.create('payments',pmtData);
       await DB.update('invoices',inv.id,{paidAmount:newPaid,balanceDue:newBal,status});
       this.closePayModal();
-      Toast.success(`₹${formatCurrency(amt)} recorded${status==='paid'?' · Invoice fully paid! 🎉':''}`);
+      Toast.success(`₹${formatCurrency(amt)} recorded${status==='paid'?' · Invoice fully paid!':''}`);
 
       // Send payment confirmation email (non-blocking)
       const emailTo = inv.customerEmail;
@@ -304,7 +305,7 @@ const InvoiceDetailPage = {
         import('../../services/email.service.js').then(async m => {
           try {
             await m.default.sendPaymentConfirm(updatedInv, amt, newBal);
-            Toast.success('📧 Payment confirmation emailed to ' + emailTo);
+            Toast.success('Payment confirmation emailed to ' + emailTo);
           } catch(e) {
             console.warn('[Email] Payment confirm failed:', e.message);
           }

@@ -4,6 +4,7 @@ import Router  from './router.js';
 import Sidebar from '../components/Sidebar.js';
 import Topbar  from '../components/Topbar.js';
 import { getPermissions } from './roles.js';
+import Icon from '../utils/icons.js';
 
 const App = {
   _started: false,
@@ -252,7 +253,7 @@ const App = {
       }, {})
 
       .on('/404', async () => {
-        Router.render(`<div class="empty-state" style="padding-top:80px;"><div class="empty-state-icon">🗺️</div><h3>Page not found</h3><a href="#/dashboard" class="btn btn-primary">Go to dashboard</a></div>`);
+        Router.render(`<div class="empty-state" style="padding-top:80px;"><div class="empty-state-icon">${Icon.mapPin(26)}</div><h3>Page not found</h3><a href="#/dashboard" class="btn btn-primary">Go to dashboard</a></div>`);
       }, {});
   },
 

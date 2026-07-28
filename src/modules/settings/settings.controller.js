@@ -3,6 +3,7 @@ import Store  from '../../core/store.js';
 import Toast  from '../../components/Toast.js';
 import { INDIAN_STATES } from '../../utils/constants.js';
 import { TeamController } from './team.controller.js';
+import Icon from '../../utils/icons.js';
 
 function clean(obj){const o={};for(const[k,v]of Object.entries(obj)){if(v!==undefined&&v!==null&&v!=='')o[k]=v;}return o;}
 function toDataURL(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=e=>res(e.target.result);r.onerror=rej;r.readAsDataURL(file);});}
@@ -74,7 +75,7 @@ const SettingsPage = {
 
             <!-- File uploads for invoice assets -->
             <div style="background:var(--bg-subtle);border:1px solid var(--border-subtle);border-radius:10px;padding:16px;margin-bottom:20px;">
-              <div style="font-size:13px;font-weight:700;color:var(--text-primary);margin-bottom:14px;">📎 Invoice assets (appear on all invoices)</div>
+              <div style="font-size:13px;font-weight:700;color:var(--text-primary);margin-bottom:14px;display:flex;align-items:center;gap:7px;">${Icon.fileText(14)} Invoice assets (appear on all invoices)</div>
               <div class="form-row-3">
                 <div class="form-group">
                   <label class="form-label">Company logo (PNG/JPG)</label>

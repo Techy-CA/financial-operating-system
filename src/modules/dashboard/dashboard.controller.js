@@ -1,6 +1,7 @@
 import Router from '../../core/router.js';
 import Store  from '../../core/store.js';
 import { formatCurrencyShort, formatCurrency, formatDate, initials, avatarColor } from '../../utils/formatters.js';
+import Icon from '../../utils/icons.js';
 
 const DashboardPage = {
   _chart: null,
@@ -46,7 +47,7 @@ const DashboardPage = {
       <div style="max-width:460px;margin:60px auto;">
         <div class="card">
           <div class="card-body" style="text-align:center;padding:44px 36px;">
-            <div style="font-size:44px;margin-bottom:16px;">🏢</div>
+            <div style="display:flex;justify-content:center;color:var(--text-disabled);margin-bottom:16px;">${Icon.building(40)}</div>
             <h2 style="font-size:20px;font-weight:700;margin-bottom:8px;">Set up your company</h2>
             <p style="color:var(--text-tertiary);font-size:13.5px;margin-bottom:24px;line-height:1.6;">
               Add your company details to start creating invoices and tracking your finances.
@@ -146,7 +147,7 @@ const DashboardPage = {
     Router.render(`
       <div class="page-header">
         <div class="page-header-left">
-          <h1>${greet}, ${name} 👋</h1>
+          <h1>${greet}, ${name}</h1>
           <p>${new Date().toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long'})} · ${fy?.label||'FY 2026-27'}</p>
         </div>
         <div class="page-header-actions">
@@ -157,7 +158,7 @@ const DashboardPage = {
       ${!d.hasData ? `
         <div style="background:linear-gradient(135deg,#EEF2FF,#E0E7FF);border:1px solid #C7D2FE;border-radius:12px;padding:18px 24px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:16px;">
           <div>
-            <div style="font-weight:700;color:#3730A3;margin-bottom:3px;">🚀 Welcome! Start by adding data.</div>
+            <div style="font-weight:700;color:#3730A3;margin-bottom:3px;display:flex;align-items:center;gap:7px;">${Icon.rocket(15)} Welcome! Start by adding data.</div>
             <div style="font-size:13px;color:#4338CA;">Add customers, create invoices, or bulk import your existing data.</div>
           </div>
           <div style="display:flex;gap:8px;flex-shrink:0;">
@@ -212,13 +213,13 @@ const DashboardPage = {
             <div class="card-header"><h2>Quick actions</h2></div>
             <div class="card-body" style="padding:8px;">
               ${[
-                {href:'#/invoices/new', icon:'🧾', label:'New invoice'},
-                {href:'#/customers/new',icon:'👤', label:'Add customer'},
-                {href:'#/expenses/new', icon:'🧮', label:'Add expense'},
-                {href:'#/import',       icon:'📥', label:'Bulk import'},
+                {href:'#/invoices/new', icon:Icon.fileText(16), label:'New invoice'},
+                {href:'#/customers/new',icon:Icon.user(16),     label:'Add customer'},
+                {href:'#/expenses/new', icon:Icon.calculator(16),label:'Add expense'},
+                {href:'#/import',       icon:Icon.upload(16),   label:'Bulk import'},
               ].map(a=>`
                 <a href="${a.href}" style="display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;text-decoration:none;transition:background 0.1s;" onmouseover="this.style.background='#F8F9FB'" onmouseout="this.style.background='transparent'">
-                  <span style="font-size:16px;">${a.icon}</span>
+                  <span style="display:flex;color:var(--text-secondary);">${a.icon}</span>
                   <span style="font-size:13.5px;font-weight:500;color:var(--text-primary);">${a.label}</span>
                   <span style="margin-left:auto;color:var(--text-tertiary);font-size:12px;">›</span>
                 </a>`).join('')}
@@ -250,7 +251,7 @@ const DashboardPage = {
         <div class="card">
           <div class="card-header"><h2>Top customers</h2><a href="#/customers" style="font-size:12px;color:var(--brand-primary);text-decoration:none;">View all</a></div>
           ${d.topCustomers.length===0
-            ? `<div class="empty-state" style="padding:32px;"><div class="empty-state-icon">👥</div><h3 style="font-size:14px;">No customers yet</h3><a href="#/customers/new" class="btn btn-primary btn-sm mt-3">Add customer</a></div>`
+            ? `<div class="empty-state" style="padding:32px;"><div class="empty-state-icon">${Icon.users(24)}</div><h3 style="font-size:14px;">No customers yet</h3><a href="#/customers/new" class="btn btn-primary btn-sm mt-3">Add customer</a></div>`
             : d.topCustomers.map(c=>{
                 const col=avatarColor(c.name);
                 return `<div style="display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--border-subtle);">

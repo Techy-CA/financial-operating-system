@@ -2,6 +2,7 @@ import Router from '../../core/router.js';
 import Store  from '../../core/store.js';
 import Toast  from '../../components/Toast.js';
 import { formatCurrencyShort, formatDate } from '../../utils/formatters.js';
+import Icon from '../../utils/icons.js';
 
 const statusBadge = {draft:'badge badge-neutral',sent:'badge badge-info',approved:'badge badge-success',rejected:'badge badge-danger',converted:'badge badge-purple',expired:'badge badge-neutral'};
 const statusLabel = {draft:'Draft',sent:'Sent',approved:'Approved',rejected:'Rejected',converted:'Converted',expired:'Expired'};
@@ -34,7 +35,7 @@ const QuotationsPage = {
         ${tabs.map(t=>`<button class="tab-item ${this._tab===t?'active':''}" onclick="QuotationsPage.setTab('${t}')">${t.charAt(0).toUpperCase()+t.slice(1)}${counts[t]>0?`<span class="tab-count">${counts[t]}</span>`:''}</button>`).join('')}
       </div>
       <div class="card">
-        ${filtered.length===0?`<div class="empty-state"><div class="empty-state-icon">📄</div><h3>No quotations</h3><p>Create quotations and convert them to invoices.</p><a href="#/quotations/new" class="btn btn-primary">Create quotation</a></div>`:
+        ${filtered.length===0?`<div class="empty-state"><div class="empty-state-icon">${Icon.fileText(24)}</div><h3>No quotations</h3><p>Create quotations and convert them to invoices.</p><a href="#/quotations/new" class="btn btn-primary">Create quotation</a></div>`:
         `<div class="table-wrapper"><table class="data-table">
           <thead><tr><th>Quotation #</th><th>Customer</th><th>Date</th><th>Valid until</th><th>Status</th><th class="text-right">Amount</th><th>Actions</th></tr></thead>
           <tbody>
@@ -47,11 +48,11 @@ const QuotationsPage = {
               <td class="col-amount">${formatCurrencyShort(q.grandTotal||0)}</td>
               <td>
                 <div style="display:flex;gap:4px;flex-wrap:wrap;">
-                  ${q.status==='sent'?`<button class="btn btn-success btn-sm" onclick="QuotationsPage.approve('${q.id}')">✓ Approve</button>`:''}
+                  ${q.status==='sent'?`<button class="btn btn-success btn-sm" onclick="QuotationsPage.approve('${q.id}')">${Icon.check(13)} Approve</button>`:''}
                   ${q.status==='sent'?`<button class="btn btn-secondary btn-sm" onclick="QuotationsPage.reject('${q.id}')">Reject</button>`:''}
                   ${q.status==='approved'?`<button class="btn btn-primary btn-sm" onclick="QuotationsPage.convertToInvoice('${q.id}')">→ Convert to Invoice</button>`:''}
                   <a href="#/quotations/${q.id}" class="btn btn-ghost btn-sm">View</a>
-                  <button class="btn btn-ghost btn-sm" onclick="QuotationsPage.del('${q.id}')">🗑</button>
+                  <button class="btn btn-ghost btn-sm" onclick="QuotationsPage.del('${q.id}')">${Icon.trash(14)}</button>
                 </div>
               </td>
             </tr>`).join('')}

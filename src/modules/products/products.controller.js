@@ -1,6 +1,7 @@
 import Router from '../../core/router.js';
 import Toast  from '../../components/Toast.js';
 import { formatCurrency } from '../../utils/formatters.js';
+import Icon from '../../utils/icons.js';
 
 const ProductsPage = {
   _list: [], _type: 'all',
@@ -58,7 +59,7 @@ const ProductsPage = {
     const wrap = document.getElementById('prod-table-wrap');
     if (!wrap) return;
     if (list.length === 0) {
-      wrap.innerHTML = `<div class="empty-state"><div class="empty-state-icon">📦</div><h3>${this._list.length === 0 ? 'No products yet' : 'No results'}</h3><p>${this._list.length === 0 ? 'Add products and services to use them in invoices with smart autocomplete.' : ''}</p>${this._list.length === 0 ? `<a href="#/products/new" class="btn btn-primary">Add first product</a>` : ''}</div>`;
+      wrap.innerHTML = `<div class="empty-state"><div class="empty-state-icon">${Icon.box(24)}</div><h3>${this._list.length === 0 ? 'No products yet' : 'No results'}</h3><p>${this._list.length === 0 ? 'Add products and services to use them in invoices with smart autocomplete.' : ''}</p>${this._list.length === 0 ? `<a href="#/products/new" class="btn btn-primary">Add first product</a>` : ''}</div>`;
       return;
     }
     wrap.innerHTML = `<div class="table-wrapper"><table class="data-table">
@@ -72,8 +73,8 @@ const ProductsPage = {
           <td class="text-right muted">${p.gstRate || 0}%</td>
           <td class="muted">${p.unit || 'Nos'}</td>
           <td class="col-actions"><div class="row-actions">
-            <a href="#/products/${p.id}" class="btn btn-ghost btn-icon btn-sm" title="Edit">✏️</a>
-            <button class="btn btn-ghost btn-icon btn-sm" onclick="ProductsPage.del('${p.id}','${(p.name||'').replace(/'/g,"\\'")}',this)" title="Delete" style="color:var(--color-danger);">🗑</button>
+            <a href="#/products/${p.id}" class="btn btn-ghost btn-icon btn-sm" title="Edit">${Icon.edit(14)}</a>
+            <button class="btn btn-ghost btn-icon btn-sm" onclick="ProductsPage.del('${p.id}','${(p.name||'').replace(/'/g,"\\'")}',this)" title="Delete" style="color:var(--color-danger);">${Icon.trash(14)}</button>
           </div></td>
         </tr>`).join('')}
       </tbody>

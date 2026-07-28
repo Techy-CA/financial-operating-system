@@ -83,7 +83,7 @@
       s.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js';
       s.onload = () => {
         window.emailjs.init('C_7lgSun6Nos8Asgr');
-        console.log('[FinOS] EmailJS ready ✅');
+        console.log('[FinOS] EmailJS ready');
         // Expose test helper in console
         window.testEmail = async (to) => {
           const { default: E } = await import('./src/services/email.service.js');

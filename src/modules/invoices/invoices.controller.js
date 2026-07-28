@@ -3,6 +3,7 @@ import Store  from '../../core/store.js';
 import Toast  from '../../components/Toast.js';
 import { formatCurrency, formatCurrencyShort, formatDate, initials, avatarColor } from '../../utils/formatters.js';
 import { INVOICE_STATUS_LABELS, INVOICE_STATUS_BADGE } from '../../utils/constants.js';
+import Icon from '../../utils/icons.js';
 
 const InvoicesPage = {
   _list: [], _tab: 'all',
@@ -74,7 +75,7 @@ const InvoicesPage = {
     const wrap = document.getElementById('inv-table-wrap');
     if (!wrap) return;
     if (list.length === 0) {
-      wrap.innerHTML = `<div class="empty-state"><div class="empty-state-icon">📄</div><h3>${this._list.length === 0 ? 'No invoices yet' : 'No results'}</h3><p>${this._list.length === 0 ? 'Create your first invoice in under 30 seconds.' : 'Try a different filter.'}</p>${this._list.length === 0 ? `<a href="#/invoices/new" class="btn btn-primary">Create first invoice</a>` : ''}</div>`;
+      wrap.innerHTML = `<div class="empty-state"><div class="empty-state-icon">${Icon.fileText(24)}</div><h3>${this._list.length === 0 ? 'No invoices yet' : 'No results'}</h3><p>${this._list.length === 0 ? 'Create your first invoice in under 30 seconds.' : 'Try a different filter.'}</p>${this._list.length === 0 ? `<a href="#/invoices/new" class="btn btn-primary">Create first invoice</a>` : ''}</div>`;
       return;
     }
     wrap.innerHTML = `<div class="table-wrapper"><table class="data-table">
@@ -96,8 +97,8 @@ const InvoicesPage = {
             <td class="col-amount">₹${formatCurrency(inv.grandTotal || 0)}</td>
             <td class="col-amount" style="${(inv.balanceDue || 0) > 0 ? 'color:var(--color-warning);' : ''}">₹${formatCurrency(inv.balanceDue || 0)}</td>
             <td onclick="event.stopPropagation()" class="col-actions"><div class="row-actions">
-              <a href="#/invoices/${inv.id}/edit" class="btn btn-ghost btn-icon btn-sm" title="Edit">✏️</a>
-              <button class="btn btn-ghost btn-icon btn-sm" onclick="InvoicesPage.del('${inv.id}','${inv.invoiceNumber||''}')" title="Delete" style="color:var(--color-danger);">🗑</button>
+              <a href="#/invoices/${inv.id}/edit" class="btn btn-ghost btn-icon btn-sm" title="Edit">${Icon.edit(14)}</a>
+              <button class="btn btn-ghost btn-icon btn-sm" onclick="InvoicesPage.del('${inv.id}','${inv.invoiceNumber||''}')" title="Delete" style="color:var(--color-danger);">${Icon.trash(14)}</button>
             </div></td>
           </tr>`;
         }).join('')}

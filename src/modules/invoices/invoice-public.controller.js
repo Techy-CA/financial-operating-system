@@ -3,6 +3,7 @@
  * Route: #/invoice/:companyId/:invoiceId
  * Completely self-contained — replaces full page
  */
+import Icon from '../../utils/icons.js';
 
 const InvoicePublicPage = {
 
@@ -16,7 +17,7 @@ const InvoicePublicPage = {
           <div style="color:#64748B;font-size:14px;">Loading invoice…</div>
         </div>
         <div id="pi-error" style="display:none;text-align:center;padding:80px 0;">
-          <div style="font-size:52px;margin-bottom:16px;">🔍</div>
+          <div style="display:flex;justify-content:center;color:#CBD5E1;margin-bottom:16px;">${Icon.search(46)}</div>
           <div style="font-size:18px;font-weight:700;color:#0F172A;margin-bottom:8px;">Invoice not found</div>
           <div style="font-size:14px;color:#64748B;">This link may be invalid or the invoice was deleted.</div>
           <div id="pi-err-detail" style="font-size:12px;color:#94A3B8;margin-top:8px;"></div>
@@ -180,8 +181,8 @@ const InvoicePublicPage = {
           </div>
         </div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;">
-          ${co.razorpayLink && !isPaid ? `<a href="${co.razorpayLink}" target="_blank" style="padding:9px 20px;background:#16A34A;color:white;border-radius:8px;font-size:13px;font-weight:700;text-decoration:none;display:inline-block;">💳 Pay Now</a>` : ''}
-          <button onclick="window.print()" style="padding:9px 20px;background:#1A3A6B;color:white;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;">🖨️ Download PDF</button>
+          ${co.razorpayLink && !isPaid ? `<a href="${co.razorpayLink}" target="_blank" style="padding:9px 20px;background:#16A34A;color:white;border-radius:8px;font-size:13px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:7px;">${Icon.creditCard(15)} Pay Now</a>` : ''}
+          <button onclick="window.print()" style="padding:9px 20px;background:#1A3A6B;color:white;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:7px;">${Icon.printer(15)} Download PDF</button>
         </div>
       </div>
 
@@ -199,7 +200,7 @@ const InvoicePublicPage = {
             <div style="font-size:14px;font-weight:600;color:white;">${fd(inv.invoiceDate)}</div>
             <div style="margin-top:10px;">
               <span style="background:${isPaid?'#16A34A':'rgba(255,255,255,0.15)'};color:white;font-size:10px;font-weight:700;padding:4px 12px;border-radius:99px;text-transform:uppercase;">
-                ${isPaid ? '✓ PAID' : (inv.status || 'SENT').toUpperCase()}
+                ${isPaid ? `<span style="display:inline-flex;align-items:center;gap:4px;vertical-align:-2px;">${Icon.check(11)}</span> PAID` : (inv.status || 'SENT').toUpperCase()}
               </span>
             </div>
           </div>
@@ -306,7 +307,7 @@ const InvoicePublicPage = {
             ${co.upiId?`<div><div style="color:#94A3B8;font-size:10px;margin-bottom:2px;">UPI ID</div><div style="font-weight:700;color:#0F172A;">${co.upiId}</div></div>`:''}
           </div>
           ${co.paymentRemarks?`<div style="font-size:11.5px;color:#64748B;margin-top:8px;">${co.paymentRemarks}</div>`:''}
-          ${co.razorpayLink&&!isPaid?`<a href="${co.razorpayLink}" target="_blank" style="display:inline-block;margin-top:12px;background:#1A3A6B;color:white;padding:10px 22px;border-radius:8px;text-decoration:none;font-size:13px;font-weight:700;">💳 Pay Online</a>`:''}
+          ${co.razorpayLink&&!isPaid?`<a href="${co.razorpayLink}" target="_blank" style="display:inline-flex;align-items:center;gap:7px;margin-top:12px;background:#1A3A6B;color:white;padding:10px 22px;border-radius:8px;text-decoration:none;font-size:13px;font-weight:700;">${Icon.creditCard(15)} Pay Online</a>`:''}
         </div>` : ''}
 
         ${inv.notes?`<div style="padding:12px 24px;border-top:1px solid #E2E8F0;font-size:12.5px;color:#64748B;"><strong style="color:#374151;">Notes:</strong> ${inv.notes}</div>`:''}
@@ -326,8 +327,8 @@ const InvoicePublicPage = {
         </div>
       </div>
 
-      <div class="np" style="text-align:center;margin-top:16px;font-size:11.5px;color:#94A3B8;">
-        🔒 Securely shared via <strong>FinOS</strong> · Financial OS for Indian Businesses 🇮🇳
+      <div class="np" style="text-align:center;margin-top:16px;font-size:11.5px;color:#94A3B8;display:flex;align-items:center;justify-content:center;gap:6px;">
+        ${Icon.lock(11)} Securely shared via <strong>FinOS</strong> · Financial OS for Indian Businesses
       </div>
     `;
   },

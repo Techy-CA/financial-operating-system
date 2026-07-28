@@ -2,6 +2,7 @@ import Router from '../../core/router.js';
 import Store  from '../../core/store.js';
 import Toast  from '../../components/Toast.js';
 import { formatCurrency, formatCurrencyShort, formatDate } from '../../utils/formatters.js';
+import Icon from '../../utils/icons.js';
 
 const ReportsPage = {
   _tab:'pl', _inv:[], _exp:[],
@@ -19,7 +20,7 @@ const ReportsPage = {
     this._render();
   },
 
-  _tabs(){return[{id:'pl',label:'P&L',icon:'📈'},{id:'cashflow',label:'Cash Flow',icon:'💸'},{id:'outstanding',label:'Outstanding',icon:'⏰'},{id:'customer',label:'By Customer',icon:'👤'},{id:'gst',label:'GST',icon:'🧮'}];},
+  _tabs(){return[{id:'pl',label:'P&L',icon:Icon.trendingUp(14)},{id:'cashflow',label:'Cash Flow',icon:Icon.cashflow(14)},{id:'outstanding',label:'Outstanding',icon:Icon.clock(14)},{id:'customer',label:'By Customer',icon:Icon.user(14)},{id:'gst',label:'GST',icon:Icon.calculator(14)}];},
 
   _render(){
     const fy=Store.get('fy');
@@ -27,10 +28,10 @@ const ReportsPage = {
       <div class="page-header">
         <div class="page-header-left"><h1>Reports</h1><p>${fy?.label||''} · All figures in INR (₹)</p></div>
         <div class="page-header-actions">
-          <button class="btn btn-secondary btn-sm" onclick="ReportsPage.export()">⬇️ Export CSV</button>
+          <button class="btn btn-secondary btn-sm" onclick="ReportsPage.export()">${Icon.download(14)} Export CSV</button>
         </div>
       </div>
-      <div class="tabs">${this._tabs().map(t=>`<button class="tab-item ${this._tab===t.id?'active':''}" onclick="ReportsPage.setTab('${t.id}')">${t.icon} ${t.label}</button>`).join('')}</div>
+      <div class="tabs">${this._tabs().map(t=>`<button class="tab-item ${this._tab===t.id?'active':''}" style="display:inline-flex;align-items:center;gap:6px;" onclick="ReportsPage.setTab('${t.id}')">${t.icon}${t.label}</button>`).join('')}</div>
       <div id="report-body">${this._tabContent()}</div>
     `);
     window.ReportsPage=this;
@@ -76,7 +77,7 @@ const ReportsPage = {
     if(this._tab==='outstanding') return `
       <div class="metric-card mb-4" style="max-width:280px;"><div class="metric-label">Total outstanding</div><div class="metric-value warning">${formatCurrencyShort(outTotal)}</div><div class="metric-subtext">${outstanding.length} invoice${outstanding.length!==1?'s':''}</div></div>
       <div class="card"><div class="card-header"><h2>Outstanding invoices</h2></div>
-        ${outstanding.length===0?`<div class="empty-state" style="padding:40px;"><div class="empty-state-icon">✅</div><h3>All caught up!</h3></div>`:
+        ${outstanding.length===0?`<div class="empty-state" style="padding:40px;"><div class="empty-state-icon">${Icon.checkCircle(24)}</div><h3>All caught up!</h3></div>`:
         `<div class="table-wrapper"><table class="data-table"><thead><tr><th>Invoice #</th><th>Customer</th><th>Due date</th><th>Status</th><th class="text-right">Balance due</th></tr></thead><tbody>
           ${outstanding.map(i=>`<tr>
             <td><a href="#/invoices/${i.id}" style="color:var(--brand-primary);font-weight:500;">${i.invoiceNumber||'—'}</a></td>
@@ -111,7 +112,7 @@ const ReportsPage = {
           <div class="metric-card"><div class="metric-label">Net payable</div><div class="metric-value warning">${formatCurrencyShort(payable)}</div></div>
         </div>
         <div class="card"><div class="card-header"><h2>GSTR-1 — Invoice wise</h2></div>
-          ${taxable.length===0?`<div class="empty-state" style="padding:40px;"><div class="empty-state-icon">🧮</div><h3>No taxable invoices yet</h3></div>`:`
+          ${taxable.length===0?`<div class="empty-state" style="padding:40px;"><div class="empty-state-icon">${Icon.calculator(24)}</div><h3>No taxable invoices yet</h3></div>`:`
           <div class="table-wrapper"><table class="data-table"><thead><tr><th>Invoice #</th><th>Customer</th><th>Date</th><th class="text-right">Taxable</th><th class="text-right">CGST</th><th class="text-right">SGST</th><th class="text-right">IGST</th><th class="text-right">Total GST</th></tr></thead><tbody>
             ${taxable.map(i=>`<tr>
               <td><a href="#/invoices/${i.id}" style="color:var(--brand-primary);font-weight:500;">${i.invoiceNumber||'—'}</a></td>

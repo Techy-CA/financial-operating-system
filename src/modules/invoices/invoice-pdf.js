@@ -1,6 +1,7 @@
 import Store from '../../core/store.js';
 import { formatCurrency, formatDate } from '../../utils/formatters.js';
 import { amountInWords } from './gst-calculator.js';
+import Icon from '../../utils/icons.js';
 
 /**
  * 3 professional invoice templates:
@@ -39,7 +40,7 @@ function commonCSS(accent, accentText='white') {
 
 function printBar() {
   return `<div class="no-print" style="text-align:right;padding:8px 0 12px;display:flex;gap:8px;justify-content:flex-end;">
-    <button onclick="window.print()" style="padding:8px 18px;background:#1a3a6b;color:white;border:none;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600;">🖨️ Print / Save PDF</button>
+    <button onclick="window.print()" style="padding:8px 18px;background:#1a3a6b;color:white;border:none;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:7px;">${Icon.printer(15)} Print / Save PDF</button>
     <button onclick="window.close()" style="padding:8px 14px;background:#f1f5f9;color:#374151;border:1px solid #e2e8f0;border-radius:6px;cursor:pointer;font-size:13px;">Close</button>
   </div>`;
 }

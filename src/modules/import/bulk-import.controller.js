@@ -7,6 +7,7 @@ import Router from '../../core/router.js';
 import Topbar from '../../components/Topbar.js';
 import Toast  from '../../components/Toast.js';
 import Store  from '../../core/store.js';
+import Icon   from '../../utils/icons.js';
 
 const BulkImportPage = {
   _type: 'customers',
@@ -28,12 +29,12 @@ const BulkImportPage = {
 
       <div class="grid-3 mb-5">
         ${[
-          {id:'customers', label:'Customers', icon:'👤', desc:'Name, GSTIN, email, phone, address'},
-          {id:'products',  label:'Products & Services', icon:'📦', desc:'Name, HSN/SAC, rate, GST%, unit'},
-          {id:'invoices',  label:'Invoices (historical)', icon:'🧾', desc:'Past invoices for records'},
+          {id:'customers', label:'Customers', icon:Icon.user(26), desc:'Name, GSTIN, email, phone, address'},
+          {id:'products',  label:'Products & Services', icon:Icon.box(26), desc:'Name, HSN/SAC, rate, GST%, unit'},
+          {id:'invoices',  label:'Invoices (historical)', icon:Icon.fileText(26), desc:'Past invoices for records'},
         ].map(t=>`
           <div onclick="BulkImportPage.setType('${t.id}')" style="padding:20px;border-radius:12px;border:2px solid ${this._type===t.id?'var(--brand-primary)':'var(--border-subtle)'};background:${this._type===t.id?'var(--brand-primary-light)':'white'};cursor:pointer;transition:all 0.12s;" onmouseover="this.style.borderColor='var(--brand-primary)'" onmouseout="this.style.borderColor='${this._type===t.id?'var(--brand-primary)':'var(--border-subtle)'}'">
-            <div style="font-size:28px;margin-bottom:8px;">${t.icon}</div>
+            <div style="color:var(--text-secondary);margin-bottom:8px;">${t.icon}</div>
             <div style="font-size:14px;font-weight:700;color:var(--text-primary);margin-bottom:4px;">${t.label}</div>
             <div style="font-size:12px;color:var(--text-tertiary);">${t.desc}</div>
           </div>`).join('')}
@@ -46,7 +47,7 @@ const BulkImportPage = {
         <div class="card-body">
           <p style="font-size:13.5px;color:var(--text-secondary);margin-bottom:16px;">Download the CSV template for <strong>${this._type}</strong>, fill in your data, and upload below.</p>
           <button class="btn btn-secondary" onclick="BulkImportPage.downloadTemplate()">
-            ⬇️ Download ${this._type} template (.csv)
+            ${Icon.download(14)} Download ${this._type} template (.csv)
           </button>
         </div>
       </div>
@@ -59,7 +60,7 @@ const BulkImportPage = {
             ondragleave="this.style.borderColor='var(--border-default)';this.style.background='var(--bg-subtle)'"
             ondrop="event.preventDefault();this.style.borderColor='var(--border-default)';this.style.background='var(--bg-subtle)';BulkImportPage.handleFile(event.dataTransfer.files[0])"
             onclick="document.getElementById('csv-input').click()">
-            <div style="font-size:36px;margin-bottom:10px;">📂</div>
+            <div style="display:flex;justify-content:center;color:var(--text-tertiary);margin-bottom:10px;">${Icon.folder(30)}</div>
             <div style="font-size:14px;font-weight:600;color:var(--text-primary);margin-bottom:4px;">Drop your CSV here or click to browse</div>
             <div style="font-size:12px;color:var(--text-tertiary);">Supports .csv files only</div>
           </div>
@@ -72,8 +73,8 @@ const BulkImportPage = {
           <div class="card-header">
             <h2 id="preview-title">Preview</h2>
             <div style="display:flex;gap:8px;">
-              <button class="btn btn-secondary btn-sm" onclick="BulkImportPage.clearPreview()">✕ Clear</button>
-              <button class="btn btn-primary" id="btn-import" onclick="BulkImportPage.doImport()">⬆️ Import all</button>
+              <button class="btn btn-secondary btn-sm" onclick="BulkImportPage.clearPreview()">${Icon.x(13)} Clear</button>
+              <button class="btn btn-primary" id="btn-import" onclick="BulkImportPage.doImport()">${Icon.upload(14)} Import all</button>
             </div>
           </div>
           <div id="preview-table" class="table-wrapper"></div>

@@ -3,6 +3,7 @@
  * Lightweight toast notification system.
  * Usage: Toast.success('Invoice created') / Toast.error('Failed to save')
  */
+import Icon from '../utils/icons.js';
 
 const Toast = {
   _container: null,
@@ -19,20 +20,20 @@ const Toast = {
     if (!container) return;
 
     const icons = {
-      success: 'ti-circle-check',
-      error:   'ti-circle-x',
-      warning: 'ti-alert-triangle',
-      info:    'ti-info-circle',
+      success: Icon.checkCircle(17),
+      error:   Icon.x(17),
+      warning: Icon.alertTriangle(17),
+      info:    Icon.info(17),
     };
 
     const el = document.createElement('div');
     el.className = `toast ${type}`;
     el.setAttribute('role', 'alert');
     el.innerHTML = `
-      <i class="ti ${icons[type] || icons.info}" aria-hidden="true"></i>
+      <i aria-hidden="true" style="display:flex;">${icons[type] || icons.info}</i>
       <span class="toast-message">${message}</span>
       ${action ? `<button class="btn btn-sm btn-ghost toast-action">${action.label}</button>` : ''}
-      <i class="ti ti-x toast-close" aria-label="Dismiss"></i>
+      <button class="toast-close" aria-label="Dismiss" style="background:none;border:none;display:flex;">${Icon.x(14)}</button>
     `;
 
     // Action handler

@@ -2,6 +2,7 @@ import Router from '../../core/router.js';
 import Store  from '../../core/store.js';
 import Toast  from '../../components/Toast.js';
 import { formatCurrency, formatCurrencyShort, formatDate } from '../../utils/formatters.js';
+import Icon from '../../utils/icons.js';
 
 const LedgerPage = {
   _entries: [],
@@ -87,7 +88,7 @@ const LedgerPage = {
       <div class="page-header">
         <div class="page-header-left"><h1>Ledger</h1><p>Auto-generated from invoices, payments &amp; expenses</p></div>
         <div class="page-header-actions">
-          <button class="btn btn-secondary btn-sm" onclick="LedgerPage.exportCSV()">⬇️ Export CSV</button>
+          <button class="btn btn-secondary btn-sm" onclick="LedgerPage.exportCSV()">${Icon.download(14)} Export CSV</button>
         </div>
       </div>
 
@@ -97,8 +98,8 @@ const LedgerPage = {
         <div class="metric-card"><div class="metric-label">Total expenses</div><div class="metric-value danger">₹${formatCurrencyShort(totalExpenses)}</div></div>
       </div>
 
-      <div style="background:var(--color-info-light);border:1px solid var(--color-info-mid);border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:13px;color:var(--color-info-text);">
-        ℹ️ <strong>Delete entries:</strong> Delete invoices from the <a href="#/invoices" style="color:var(--color-info-text);font-weight:700;">Invoices page</a>. Orphan payments and expenses can be deleted here using the 🗑 button.
+      <div style="background:var(--color-info-light);border:1px solid var(--color-info-mid);border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:13px;color:var(--color-info-text);display:flex;gap:8px;">
+        ${Icon.info(15)} <span><strong>Delete entries:</strong> Delete invoices from the <a href="#/invoices" style="color:var(--color-info-text);font-weight:700;">Invoices page</a>. Orphan payments and expenses can be deleted here using the delete button.</span>
       </div>
 
       <div class="card">
@@ -107,7 +108,7 @@ const LedgerPage = {
         </div>
         ${withBalance.length === 0 ? `
           <div class="empty-state" style="padding:48px;">
-            <div class="empty-state-icon">📒</div>
+            <div class="empty-state-icon">${Icon.fileText(24)}</div>
             <h3>No entries yet</h3>
             <p>Create invoices, record payments, and add expenses — they appear here automatically.</p>
           </div>` : `
@@ -138,8 +139,8 @@ const LedgerPage = {
                     ${e.deletable && e.id ? `
                       <button class="btn btn-ghost btn-icon btn-sm" style="color:var(--color-danger);"
                         onclick="LedgerPage.delEntry('${e.id}','${e.type}','${(e.description||'').slice(0,30).replace(/'/g,"\\'")}',this)"
-                        title="Delete this ${e.type.toLowerCase()}">🗑</button>` : ''}
-                    ${e.editHref ? `<a href="${e.editHref}" class="btn btn-ghost btn-icon btn-sm" title="Edit">✏️</a>` : ''}
+                        title="Delete this ${e.type.toLowerCase()}">${Icon.trash(14)}</button>` : ''}
+                    ${e.editHref ? `<a href="${e.editHref}" class="btn btn-ghost btn-icon btn-sm" title="Edit">${Icon.edit(14)}</a>` : ''}
                   </td>
                 </tr>`).join('')}
               </tbody>

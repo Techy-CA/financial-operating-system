@@ -3,6 +3,7 @@ import Store  from '../../core/store.js';
 import Toast  from '../../components/Toast.js';
 import { formatCurrency, formatCurrencyShort, formatDate } from '../../utils/formatters.js';
 import { EXPENSE_CATEGORIES, EXPENSE_CATEGORY_MAP } from '../../utils/constants.js';
+import Icon from '../../utils/icons.js';
 
 const ExpensesPage = {
   _list: [], _cat: 'all',
@@ -61,7 +62,7 @@ const ExpensesPage = {
     if (!tableEl) return;
 
     if (filtered.length === 0) {
-      tableEl.innerHTML = `<div class="empty-state"><div class="empty-state-icon">🧾</div><h3>${this._list.length===0?'No expenses yet':'No results'}</h3><p>${this._list.length===0?'Start tracking business expenses.':''}</p>${this._list.length===0?`<a href="#/expenses/new" class="btn btn-primary">Add first expense</a>`:''}</div>`;
+      tableEl.innerHTML = `<div class="empty-state"><div class="empty-state-icon">${Icon.fileText(24)}</div><h3>${this._list.length===0?'No expenses yet':'No results'}</h3><p>${this._list.length===0?'Start tracking business expenses.':''}</p>${this._list.length===0?`<a href="#/expenses/new" class="btn btn-primary">Add first expense</a>`:''}</div>`;
       return;
     }
 
@@ -84,8 +85,8 @@ const ExpensesPage = {
                 <td class="col-amount" style="font-weight:700;">₹${formatCurrency(e.amount||0)}</td>
                 <td class="col-actions">
                   <div class="row-actions">
-                    <a href="#/expenses/${e.id}/edit" class="btn btn-secondary btn-sm" title="Edit">✏️ Edit</a>
-                    <button class="btn btn-danger btn-sm" onclick="ExpensesPage.del('${e.id}','${(e.description||'').replace(/'/g,"\\'")}',this)" title="Delete">🗑 Delete</button>
+                    <a href="#/expenses/${e.id}/edit" class="btn btn-secondary btn-sm" title="Edit">${Icon.edit(13)} Edit</a>
+                    <button class="btn btn-danger btn-sm" onclick="ExpensesPage.del('${e.id}','${(e.description||'').replace(/'/g,"\\'")}',this)" title="Delete">${Icon.trash(13)} Delete</button>
                   </div>
                 </td>
               </tr>`;

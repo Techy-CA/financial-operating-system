@@ -11,6 +11,7 @@
 
 import Store from '../../core/store.js';
 import Toast from '../../components/Toast.js';
+import Icon  from '../../utils/icons.js';
 
 const CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // no ambiguous chars
 
@@ -45,7 +46,7 @@ export const TeamController = {
 
         <!-- Workspace key card -->
         <div class="card">
-          <div class="card-header"><h2>🔑 Workspace key</h2></div>
+          <div class="card-header"><h2 style="display:flex;align-items:center;gap:8px;">${Icon.key(16)} Workspace key</h2></div>
           <div class="card-body">
             <p style="font-size:13.5px;color:var(--text-secondary);margin-bottom:16px;">
               Share this key with your team. They go to <a href="#/join" style="color:var(--brand-primary);font-weight:600;">${joinUrl}</a>, enter the key, and create an account. You then approve them here.
@@ -55,13 +56,13 @@ export const TeamController = {
                 Loading…
               </div>
               <div style="display:flex;flex-direction:column;gap:6px;">
-                <button onclick="TeamController.copyKey()" class="btn btn-secondary btn-sm">📋 Copy key</button>
-                <button onclick="TeamController.copyLink()" class="btn btn-secondary btn-sm">🔗 Copy link</button>
-                <button onclick="TeamController.newKey()" class="btn btn-ghost btn-sm" style="font-size:11px;color:var(--text-tertiary);">🔄 Regenerate</button>
+                <button onclick="TeamController.copyKey()" class="btn btn-secondary btn-sm">${Icon.clipboard(13)} Copy key</button>
+                <button onclick="TeamController.copyLink()" class="btn btn-secondary btn-sm">${Icon.link(13)} Copy link</button>
+                <button onclick="TeamController.newKey()" class="btn btn-ghost btn-sm" style="font-size:11px;color:var(--text-tertiary);">${Icon.refresh(12)} Regenerate</button>
               </div>
             </div>
-            <div style="background:var(--color-info-light);border:1px solid var(--color-info-mid);border-radius:8px;padding:10px 14px;font-size:12.5px;color:var(--color-info-text);">
-              🔒 <strong>Security:</strong> This key grants access requests only. You still approve every member before they get access. Regenerate the key anytime to invalidate old ones.
+            <div style="background:var(--color-info-light);border:1px solid var(--color-info-mid);border-radius:8px;padding:10px 14px;font-size:12.5px;color:var(--color-info-text);display:flex;gap:8px;">
+              ${Icon.lock(14)} <span><strong>Security:</strong> This key grants access requests only. You still approve every member before they get access. Regenerate the key anytime to invalidate old ones.</span>
             </div>
           </div>
         </div>
@@ -69,15 +70,15 @@ export const TeamController = {
         <!-- Pending join requests -->
         <div class="card">
           <div class="card-header">
-            <h2>📬 Join requests</h2>
-            <button onclick="TeamController.refresh()" class="btn btn-ghost btn-sm">↻ Refresh</button>
+            <h2 style="display:flex;align-items:center;gap:8px;">${Icon.inbox(16)} Join requests</h2>
+            <button onclick="TeamController.refresh()" class="btn btn-ghost btn-sm">${Icon.refresh(13)} Refresh</button>
           </div>
           <div id="join-requests"><div style="text-align:center;padding:24px;"><div class="spinner-sm"></div></div></div>
         </div>
 
         <!-- Current members -->
         <div class="card">
-          <div class="card-header"><h2>👥 Current team</h2></div>
+          <div class="card-header"><h2 style="display:flex;align-items:center;gap:8px;">${Icon.users(16)} Current team</h2></div>
           <div class="card-body">
             <div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--bg-subtle);border-radius:10px;margin-bottom:10px;">
               <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#3B82F6,#1D4ED8);color:white;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;">${(user.displayName||user.email||'U').charAt(0).toUpperCase()}</div>
@@ -93,7 +94,7 @@ export const TeamController = {
 
         <!-- Roles matrix -->
         <div class="card">
-          <div class="card-header"><h2>📋 Roles & permissions</h2></div>
+          <div class="card-header"><h2 style="display:flex;align-items:center;gap:8px;">${Icon.clipboard(16)} Roles & permissions</h2></div>
           <div class="card-body" style="overflow-x:auto;">
             <table class="data-table" style="min-width:500px;">
               <thead><tr><th>Permission</th><th class="text-center">Founder</th><th class="text-center">Admin</th><th class="text-center">Accountant</th><th class="text-center">Sales</th><th class="text-center">Auditor</th></tr></thead>
@@ -109,7 +110,7 @@ export const TeamController = {
                   ['Vendors & products',     true, true, false, false, false],
                   ['Manage team',            true, false, false, false, false],
                   ['Company settings',       true, true, false, false, false],
-                ].map(([p,...v]) => `<tr><td style="font-size:13px;">${p}</td>${v.map(x => `<td class="text-center" style="font-size:16px;">${x ? '<span style="color:var(--color-success);">✓</span>' : '<span style="color:var(--border-strong);">–</span>'}</td>`).join('')}</tr>`).join('')}
+                ].map(([p,...v]) => `<tr><td style="font-size:13px;">${p}</td>${v.map(x => `<td class="text-center">${x ? `<span style="color:var(--color-success);display:inline-flex;">${Icon.check(14)}</span>` : '<span style="color:var(--border-strong);">–</span>'}</td>`).join('')}</tr>`).join('')}
               </tbody>
             </table>
           </div>
@@ -229,11 +230,11 @@ export const TeamController = {
                   </select>
                 </div>
                 <div style="display:flex;flex-direction:column;gap:5px;margin-top:15px;">
-                  <button class="btn btn-success btn-sm" onclick="TeamController.approve('${r.id}','${r.uid}','${r.email}','${r.name||''}')">✓ Approve</button>
+                  <button class="btn btn-success btn-sm" onclick="TeamController.approve('${r.id}','${r.uid}','${r.email}','${r.name||''}')">${Icon.check(13)} Approve</button>
                   <button class="btn btn-secondary btn-sm" onclick="TeamController.reject('${r.id}','${r.name||r.email}')">Reject</button>
                 </div>
               </div>` :
-              `<span class="badge ${r.status === 'approved' ? 'badge-success' : 'badge-danger'}">${r.status === 'approved' ? '✓ Approved' : '✕ Rejected'}</span>`}
+              `<span class="badge ${r.status === 'approved' ? 'badge-success' : 'badge-danger'}">${r.status === 'approved' ? `${Icon.check(11)} Approved` : `${Icon.x(11)} Rejected`}</span>`}
           </div>`).join('')}
       </div>`;
     } catch(e) {

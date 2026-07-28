@@ -4,6 +4,7 @@
  */
 
 import Store from '../core/store.js';
+import Icon  from '../utils/icons.js';
 
 const Notifications = {
   _unread: 0,
@@ -82,30 +83,30 @@ const Notifications = {
     };
 
     const actIcon = (type) => {
-      if (type?.includes('invoice')) return '🧾';
-      if (type?.includes('payment')) return '💰';
-      if (type?.includes('customer')) return '👤';
-      if (type?.includes('expense')) return '🧮';
-      if (type?.includes('vendor')) return '🚚';
-      if (type?.includes('team')) return '👥';
-      return '📋';
+      if (type?.includes('invoice'))  return Icon.fileText(15);
+      if (type?.includes('payment'))  return Icon.wallet(15);
+      if (type?.includes('customer')) return Icon.user(15);
+      if (type?.includes('expense'))  return Icon.calculator(15);
+      if (type?.includes('vendor'))   return Icon.truck(15);
+      if (type?.includes('team'))     return Icon.users(15);
+      return Icon.clipboard(15);
     };
 
     panel.innerHTML = `
       <div style="padding:14px 16px 10px;border-bottom:1px solid #E2E8F0;display:flex;align-items:center;justify-content:space-between;">
         <div style="font-size:15px;font-weight:700;color:#0F172A;">Activity</div>
-        <button onclick="document.getElementById('__notif-panel')?.remove()" style="background:none;border:none;cursor:pointer;color:#64748B;font-size:18px;line-height:1;">✕</button>
+        <button onclick="document.getElementById('__notif-panel')?.remove()" style="background:none;border:none;cursor:pointer;color:#64748B;display:flex;">${Icon.x(16)}</button>
       </div>
       <div style="overflow-y:auto;flex:1;padding:6px;">
         ${this._activities.length === 0 ? `
           <div style="text-align:center;padding:40px 20px;color:#94A3B8;">
-            <div style="font-size:28px;margin-bottom:10px;">🔔</div>
+            <div style="display:flex;justify-content:center;margin-bottom:10px;">${Icon.bell(28)}</div>
             <div style="font-size:13.5px;font-weight:500;color:#64748B;">No activity yet</div>
             <div style="font-size:12px;margin-top:4px;">Actions by you and your team will appear here</div>
           </div>
         ` : this._activities.map(a => `
           <div style="display:flex;align-items:flex-start;gap:10px;padding:10px 10px;border-radius:9px;transition:background 0.1s;" onmouseover="this.style.background='#F8FAFC'" onmouseout="this.style.background='transparent'">
-            <div style="width:32px;height:32px;border-radius:9px;background:#F1F5F9;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">${actIcon(a.type)}</div>
+            <div style="width:32px;height:32px;border-radius:9px;background:#F1F5F9;display:flex;align-items:center;justify-content:center;color:#4A5568;flex-shrink:0;">${actIcon(a.type)}</div>
             <div style="flex:1;min-width:0;">
               <div style="font-size:13px;color:#0F172A;line-height:1.45;">${a.message||a.description||'Activity recorded'}</div>
               <div style="display:flex;align-items:center;gap:6px;margin-top:4px;">
