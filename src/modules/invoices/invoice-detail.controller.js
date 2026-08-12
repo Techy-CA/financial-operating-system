@@ -140,7 +140,7 @@ const InvoiceDetailPage = {
           ${days>0?`<span style="font-size:12px;color:var(--color-danger);font-weight:600;display:inline-flex;align-items:center;gap:4px;">${Icon.alertTriangle(12)} ${days} days overdue</span>`:''}
           ${inv.customerEmail?`<span style="font-size:11px;color:var(--color-success);display:inline-flex;align-items:center;gap:4px;">${Icon.mail(11)} ${inv.customerEmail}</span>`:`<span style="font-size:11px;color:var(--color-warning);display:inline-flex;align-items:center;gap:4px;">${Icon.alertTriangle(11)} No customer email · <a href="#/customers/${inv.customerId}/edit" style="color:var(--brand-primary);">Add email</a></span>`}
         </div>
-        <div>${inv.status!=='paid'?`Balance: <strong style="color:var(--color-warning);font-size:18px;">₹${formatCurrency(inv.balanceDue||0)}</strong>`:`<span style="color:var(--color-success);font-weight:700;display:inline-flex;align-items:center;gap:5px;">${Icon.check(13)} Paid in full</span>`}</div>
+        <div>${inv.status!=='paid'?`Balance: <strong style="color:var(--color-warning);font-size:18px;">${formatCurrency(inv.balanceDue||0)}</strong>`:`<span style="color:var(--color-success);font-weight:700;display:inline-flex;align-items:center;gap:5px;">${Icon.check(13)} Paid in full</span>`}</div>
       </div>
 
       <!-- Invoice card -->
@@ -189,10 +189,10 @@ const InvoiceDetailPage = {
                     <td style="font-weight:500;">${item.description||'—'}</td>
                     <td class="muted">${item.hsn||'—'}</td>
                     <td class="text-right muted">${item.qty||1} ${item.unit||''}</td>
-                    <td class="col-amount">₹${formatCurrency(item.rate||0)}</td>
+                    <td class="col-amount">${formatCurrency(item.rate||0)}</td>
                     <td class="text-right muted">${item.discount||0}%</td>
                     <td class="text-right muted">${item.gstRate||0}%</td>
-                    <td class="col-amount"><strong>₹${formatCurrency(taxable+gst)}</strong></td>
+                    <td class="col-amount"><strong>${formatCurrency(taxable+gst)}</strong></td>
                   </tr>`;
                 }).join('')}
             </tbody>
@@ -202,18 +202,18 @@ const InvoiceDetailPage = {
         <!-- Totals -->
         <div style="display:flex;justify-content:flex-end;padding:16px 24px;background:var(--bg-subtle);border-top:1px solid var(--border-subtle);">
           <div style="width:280px;display:flex;flex-direction:column;gap:6px;font-size:13px;">
-            <div style="display:flex;justify-content:space-between;color:var(--text-secondary);"><span>Subtotal</span><span>₹${formatCurrency(inv.subTotal||0)}</span></div>
-            ${(inv.totalDiscount||0)>0?`<div style="display:flex;justify-content:space-between;color:var(--color-success);"><span>Discount</span><span>-₹${formatCurrency(inv.totalDiscount)}</span></div>`:''}
+            <div style="display:flex;justify-content:space-between;color:var(--text-secondary);"><span>Subtotal</span><span>${formatCurrency(inv.subTotal||0)}</span></div>
+            ${(inv.totalDiscount||0)>0?`<div style="display:flex;justify-content:space-between;color:var(--color-success);"><span>Discount</span><span>-${formatCurrency(inv.totalDiscount)}</span></div>`:''}
             ${inv.interState
-              ?`<div style="display:flex;justify-content:space-between;color:var(--text-secondary);"><span>IGST</span><span>₹${formatCurrency(inv.igst||0)}</span></div>`
-              :`<div style="display:flex;justify-content:space-between;color:var(--text-secondary);"><span>CGST</span><span>₹${formatCurrency(inv.cgst||0)}</span></div>
-                <div style="display:flex;justify-content:space-between;color:var(--text-secondary);"><span>SGST</span><span>₹${formatCurrency(inv.sgst||0)}</span></div>`}
+              ?`<div style="display:flex;justify-content:space-between;color:var(--text-secondary);"><span>IGST</span><span>${formatCurrency(inv.igst||0)}</span></div>`
+              :`<div style="display:flex;justify-content:space-between;color:var(--text-secondary);"><span>CGST</span><span>${formatCurrency(inv.cgst||0)}</span></div>
+                <div style="display:flex;justify-content:space-between;color:var(--text-secondary);"><span>SGST</span><span>${formatCurrency(inv.sgst||0)}</span></div>`}
             <div style="height:1px;background:var(--border-default);margin:4px 0;"></div>
-            <div style="display:flex;justify-content:space-between;font-size:19px;font-weight:800;"><span>Total</span><span>₹${formatCurrency(inv.grandTotal||0)}</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:19px;font-weight:800;"><span>Total</span><span>${formatCurrency(inv.grandTotal||0)}</span></div>
             ${(inv.paidAmount||0)>0?`
-              <div style="display:flex;justify-content:space-between;color:var(--color-success);"><span>Paid</span><span>-₹${formatCurrency(inv.paidAmount)}</span></div>
+              <div style="display:flex;justify-content:space-between;color:var(--color-success);"><span>Paid</span><span>-${formatCurrency(inv.paidAmount)}</span></div>
               <div style="display:flex;justify-content:space-between;font-weight:700;color:${(inv.balanceDue||0)>0?'var(--color-warning)':'var(--color-success)'};">
-                <span>Balance due</span><span>₹${formatCurrency(inv.balanceDue||0)}</span>
+                <span>Balance due</span><span>${formatCurrency(inv.balanceDue||0)}</span>
               </div>`:''}
           </div>
         </div>
@@ -236,7 +236,7 @@ const InvoiceDetailPage = {
       ${pays.length>0?`<div class="card mb-4">
         <div class="card-header"><h2>Payment history</h2></div>
         <div class="table-wrapper"><table class="data-table"><thead><tr><th>Date</th><th>Method</th><th>Reference</th><th class="text-right">Amount</th></tr></thead><tbody>
-          ${pays.map(p=>`<tr><td>${formatDate(p.paymentDate||p.createdAt)}</td><td class="muted">${p.method||'—'}</td><td class="muted">${p.reference||'—'}</td><td class="col-amount" style="color:var(--color-success);font-weight:600;">₹${formatCurrency(p.amount||0)}</td></tr>`).join('')}
+          ${pays.map(p=>`<tr><td>${formatDate(p.paymentDate||p.createdAt)}</td><td class="muted">${p.method||'—'}</td><td class="muted">${p.reference||'—'}</td><td class="col-amount" style="color:var(--color-success);font-weight:600;">${formatCurrency(p.amount||0)}</td></tr>`).join('')}
         </tbody></table></div>
       </div>`:''}
 
@@ -257,7 +257,7 @@ const InvoiceDetailPage = {
             <div class="form-group mb-4">
               <label class="form-label">Amount received <span class="required">*</span></label>
               <div class="input-wrapper"><span class="input-rupee-prefix">₹</span><input class="input input-rupee" type="number" id="pay-amt" value="${balance}" min="0.01" step="0.01" /></div>
-              <div class="form-hint">Balance due: ₹${formatCurrency(balance)}</div>
+              <div class="form-hint">Balance due: ${formatCurrency(balance)}</div>
             </div>
             <div class="form-group mb-4"><label class="form-label">Payment method</label><select class="select" id="pay-meth">${mOpts}</select></div>
             <div class="form-group mb-4"><label class="form-label">Payment date <span class="required">*</span></label><input class="input" type="date" id="pay-date" value="${today}" /></div>
@@ -295,7 +295,7 @@ const InvoiceDetailPage = {
       await DB.create('payments',pmtData);
       await DB.update('invoices',inv.id,{paidAmount:newPaid,balanceDue:newBal,status});
       this.closePayModal();
-      Toast.success(`₹${formatCurrency(amt)} recorded${status==='paid'?' · Invoice fully paid!':''}`);
+      Toast.success(`${formatCurrency(amt)} recorded${status==='paid'?' · Invoice fully paid!':''}`);
 
       // Send payment confirmation email (non-blocking)
       const emailTo = inv.customerEmail;

@@ -53,7 +53,7 @@ const InvoicesPage = {
     }
     const total = this._list.reduce((s, i) => s + (i.grandTotal || 0), 0);
     const countEl = document.getElementById('inv-count');
-    if (countEl) countEl.textContent = `${this._list.length} invoices · ₹${formatCurrencyShort(total)} total`;
+    if (countEl) countEl.textContent = `${this._list.length} invoices · ${formatCurrencyShort(total)} total`;
   },
 
   _filter() {
@@ -94,8 +94,8 @@ const InvoicesPage = {
             <td class="muted">${formatDate(inv.invoiceDate)}</td>
             <td class="muted">${formatDate(inv.dueDate)}</td>
             <td><span class="${INVOICE_STATUS_BADGE[inv.status] || 'badge badge-neutral'} badge-dot">${INVOICE_STATUS_LABELS[inv.status] || inv.status || 'draft'}</span></td>
-            <td class="col-amount">₹${formatCurrency(inv.grandTotal || 0)}</td>
-            <td class="col-amount" style="${(inv.balanceDue || 0) > 0 ? 'color:var(--color-warning);' : ''}">₹${formatCurrency(inv.balanceDue || 0)}</td>
+            <td class="col-amount">${formatCurrency(inv.grandTotal || 0)}</td>
+            <td class="col-amount" style="${(inv.balanceDue || 0) > 0 ? 'color:var(--color-warning);' : ''}">${formatCurrency(inv.balanceDue || 0)}</td>
             <td onclick="event.stopPropagation()" class="col-actions"><div class="row-actions">
               <a href="#/invoices/${inv.id}/edit" class="btn btn-ghost btn-icon btn-sm" title="Edit">${Icon.edit(14)}</a>
               <button class="btn btn-ghost btn-icon btn-sm" onclick="InvoicesPage.del('${inv.id}','${inv.invoiceNumber||''}')" title="Delete" style="color:var(--color-danger);">${Icon.trash(14)}</button>
@@ -106,7 +106,7 @@ const InvoicesPage = {
     </table>
     <div class="card-footer" style="display:flex;justify-content:space-between;align-items:center;">
       <span style="font-size:12px;color:var(--text-tertiary);">Showing ${list.length} of ${this._list.length}</span>
-      <span style="font-size:12px;font-weight:600;">Total: ₹${formatCurrencyShort(list.reduce((s,i)=>s+(i.grandTotal||0),0))}</span>
+      <span style="font-size:12px;font-weight:600;">Total: ${formatCurrencyShort(list.reduce((s,i)=>s+(i.grandTotal||0),0))}</span>
     </div></div>`;
   },
 

@@ -56,6 +56,7 @@ const InventoryPage = {
   },
 
   async reload() {
+    if (!await InventoryService.waitForCompany()) { this._renderNoCompany(); return; }
     try {
       [this._items, this._warehouses] = await Promise.all([
         InventoryService.listItems(),
@@ -72,18 +73,28 @@ const InventoryPage = {
     this._renderTable();
   },
 
+  _renderNoCompany() {
+    const sub = document.getElementById('inv-sub');
+    if (sub) sub.textContent = 'No company selected';
+    document.getElementById('stk-metrics')?.remove();
+    const wrap = document.getElementById('stk-table');
+    if (wrap) wrap.innerHTML = `<div class="empty-state"><div class="empty-state-icon">${Icon.building(24)}</div>
+      <h3>Set up your company first</h3><p>Inventory is kept per company. Add your company details to start tracking stock.</p>
+      <a href="#/settings" class="btn btn-primary">Go to Settings</a></div>`;
+  },
+
   // ── HEADER BLOCKS ────────────────────────────────────────────────────────
   _renderMetrics() {
     const s  = InventoryService.stats(this._items);
     const el = document.getElementById('stk-metrics');
     const sub= document.getElementById('inv-sub');
-    if (sub) sub.textContent = `${s.itemCount} tracked item${s.itemCount === 1 ? '' : 's'} · ₹${formatCurrencyShort(s.stockValue)} at cost`;
+    if (sub) sub.textContent = `${s.itemCount} tracked item${s.itemCount === 1 ? '' : 's'} · ${formatCurrencyShort(s.stockValue)} at cost`;
     if (!el) return;
     el.innerHTML = `
       <div class="metric-card">
         <div class="metric-label">Stock value (cost)</div>
-        <div class="metric-value">₹${formatCurrencyShort(s.stockValue)}</div>
-        <div class="metric-subtext">₹${formatCurrencyShort(s.potentialSaleValue)} at selling price</div>
+        <div class="metric-value">${formatCurrencyShort(s.stockValue)}</div>
+        <div class="metric-subtext">${formatCurrencyShort(s.potentialSaleValue)} at selling price</div>
       </div>
       <div class="metric-card">
         <div class="metric-label">Items tracked</div>
@@ -199,8 +210,8 @@ const InventoryPage = {
             <td style="font-family:var(--font-mono);font-size:11.5px;color:var(--text-secondary);">${esc(i.sku || i.hsn || '—')}</td>
             <td class="text-right" style="font-weight:700;${qty < 0 ? 'color:var(--color-danger);' : ''}">${qty} <span style="font-weight:400;color:var(--text-tertiary);font-size:11px;">${esc(i.unit || 'Nos')}</span></td>
             <td class="text-right muted">${i.reorderLevel || '—'}</td>
-            <td class="col-amount">₹${formatCurrency(i.avgCost || 0)}</td>
-            <td class="col-amount">₹${formatCurrency(i.stockValue || 0)}</td>
+            <td class="col-amount">${formatCurrency(i.avgCost || 0)}</td>
+            <td class="col-amount">${formatCurrency(i.stockValue || 0)}</td>
             <td><span class="${STOCK_STATUS_BADGE[i.stockStatus]} badge-dot">${STOCK_STATUS_LABELS[i.stockStatus]}</span></td>
             <td class="col-actions" onclick="event.stopPropagation()"><div class="row-actions">
               <button class="btn btn-ghost btn-icon btn-sm" title="Stock in"  style="color:var(--color-success);" onclick="InventoryPage.stockIn('${i.id}')">${Icon.arrowDownIn(14)}</button>
@@ -214,7 +225,7 @@ const InventoryPage = {
     </table>
     <div class="card-footer" style="display:flex;justify-content:space-between;align-items:center;">
       <span style="font-size:12px;color:var(--text-tertiary);">Showing ${list.length} of ${this._items.length} items</span>
-      <span style="font-size:12px;font-weight:600;">Value: ₹${formatCurrencyShort(list.reduce((s, i) => s + (i.stockValue || 0), 0))}</span>
+      <span style="font-size:12px;font-weight:600;">Value: ${formatCurrencyShort(list.reduce((s, i) => s + (i.stockValue || 0), 0))}</span>
     </div></div>`;
   },
 
@@ -222,6 +233,12 @@ const InventoryPage = {
 
   // ── ACTIONS ──────────────────────────────────────────────────────────────
   _open(mode, id) {
+    // Nothing to move yet — send the user to the step that unblocks them
+    if (!id && this._items.length === 0) {
+      Toast.info('Pick the products you want to track first');
+      this.trackItems();
+      return;
+    }
     StockModal.open({
       mode,
       item:       id ? this._items.find(i => i.id === id) : null,

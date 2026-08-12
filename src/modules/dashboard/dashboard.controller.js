@@ -302,7 +302,7 @@ const DashboardPage = {
         <div class="card mb-5" style="border-color:#FDE68A;">
           <div class="card-header" style="background:#FFFBEB;">
             <h2 style="display:flex;align-items:center;gap:7px;color:#92400E;">${Icon.alertTriangle(15)} Reorder alerts</h2>
-            <a href="#/inventory" style="font-size:12px;color:var(--brand-primary);text-decoration:none;">Inventory · ₹${formatCurrencyShort(stats.stockValue)} in stock →</a>
+            <a href="#/inventory" style="font-size:12px;color:var(--brand-primary);text-decoration:none;">Inventory · ${formatCurrencyShort(stats.stockValue)} in stock →</a>
           </div>
           <div class="card-body" style="display:flex;gap:10px;flex-wrap:wrap;padding:12px 16px;">
             ${alerts.map(i => `

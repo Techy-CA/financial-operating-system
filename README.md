@@ -127,6 +127,25 @@ FIREBASE_APP_ID=
 
 ---
 
+## Demo data
+
+```bash
+npm run seed
+```
+
+Loads a full walkthrough company — **Eka Gifts Pvt Ltd**, FY 2026-27 — into the
+demo account `admin@gmail.com` / `123456789`: 12 customers, 6 vendors, 13
+products, 26 invoices across every status, 16 payments, 34 expenses, 6
+quotations and 81 stock movements with reconciled balances.
+
+The script signs in with the project's public web API key and writes through the
+Firestore REST API, so no service-account key is needed. Everything lands under
+the single company `demo-eka-gifts`; re-running wipes and rebuilds **only that
+company** and never touches other data. Override the account with
+`SEED_EMAIL` / `SEED_PASSWORD`.
+
+---
+
 ## Inventory
 
 Stock tracking is opt-in per product (**Products → edit → Stock tracking**). Once

@@ -69,7 +69,7 @@ const ProductsPage = {
           <td><div style="font-weight:600;">${p.name || '—'}</div>${p.description ? `<div style="font-size:11px;color:var(--text-tertiary);">${p.description}</div>` : ''}</td>
           <td><span class="badge ${p.type === 'service' ? 'badge-purple' : 'badge-neutral'}">${p.type || 'product'}</span></td>
           <td style="font-family:var(--font-mono);font-size:11.5px;color:var(--text-secondary);">${p.hsn || p.sac || '—'}</td>
-          <td class="col-amount">₹${formatCurrency(p.rate || 0)}</td>
+          <td class="col-amount">${formatCurrency(p.rate || 0)}</td>
           <td class="text-right muted">${p.gstRate || 0}%</td>
           <td class="muted">${p.unit || 'Nos'}</td>
           <td class="text-right">${this._stockCell(p)}</td>
@@ -84,7 +84,7 @@ const ProductsPage = {
 
   /** Stock column — only tracked goods carry a balance. */
   _stockCell(p) {
-    if (!p.trackInventory) return `<span class="muted" style="font-size:11.5px;">Not tracked</span>`;
+    if (!p.trackInventory) return `<span style="color:var(--text-disabled);">—</span>`;
     const qty     = parseFloat(p.stockQty) || 0;
     const reorder = parseFloat(p.reorderLevel) || 0;
     const tone    = qty < 0 ? 'var(--color-danger)' : qty === 0 ? 'var(--text-tertiary)' : (reorder > 0 && qty <= reorder) ? 'var(--color-warning)' : 'var(--text-primary)';

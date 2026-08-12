@@ -18,6 +18,12 @@ const ItemStockPage = {
     Topbar.render({ breadcrumb: [{ label: 'Inventory', route: '/inventory' }, { label: 'Item' }] });
     Router.render(`<div class="card"><div style="padding:60px;text-align:center;"><div class="spinner-sm"></div></div></div>`);
 
+    if (!await InventoryService.waitForCompany()) {
+      Router.render(`<div class="empty-state" style="padding-top:60px;"><div class="empty-state-icon">${Icon.building(24)}</div>
+        <h3>Set up your company first</h3><a href="#/settings" class="btn btn-primary">Go to Settings</a></div>`);
+      return;
+    }
+
     try {
       const [item, moves, warehouses] = await Promise.all([
         InventoryService.getItem(id),
@@ -58,7 +64,7 @@ const ItemStockPage = {
           <h1 style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">${esc(i.name)}
             <span class="${STOCK_STATUS_BADGE[i.stockStatus]} badge-dot" style="font-size:12px;">${STOCK_STATUS_LABELS[i.stockStatus]}</span>
           </h1>
-          <p>${esc(i.sku ? `SKU ${i.sku} · ` : '')}${esc(i.hsn ? `HSN ${i.hsn} · ` : '')}${i.rate ? `Selling ₹${formatCurrency(i.rate)}` : ''} ${i.gstRate ? `· GST ${i.gstRate}%` : ''}</p>
+          <p>${esc(i.sku ? `SKU ${i.sku} · ` : '')}${esc(i.hsn ? `HSN ${i.hsn} · ` : '')}${i.rate ? `Selling ${formatCurrency(i.rate)}` : ''} ${i.gstRate ? `· GST ${i.gstRate}%` : ''}</p>
         </div>
         <div class="page-header-actions" style="display:flex;gap:6px;flex-wrap:wrap;">
           <button class="btn btn-secondary btn-sm" onclick="ItemStockPage.act('in')">${Icon.arrowDownIn(14)} Stock in</button>
@@ -76,13 +82,13 @@ const ItemStockPage = {
         </div>
         <div class="metric-card">
           <div class="metric-label">Stock value</div>
-          <div class="metric-value">₹${formatCurrencyShort(i.stockValue)}</div>
-          <div class="metric-subtext">avg cost ₹${formatCurrency(i.avgCost || 0)}</div>
+          <div class="metric-value">${formatCurrencyShort(i.stockValue)}</div>
+          <div class="metric-subtext">avg cost ${formatCurrency(i.avgCost || 0)}</div>
         </div>
         <div class="metric-card">
           <div class="metric-label">Received (all time)</div>
           <div class="metric-value" style="color:var(--color-success);">${t.inQty}</div>
-          <div class="metric-subtext">₹${formatCurrencyShort(t.purchaseValue)} purchased</div>
+          <div class="metric-subtext">${formatCurrencyShort(t.purchaseValue)} purchased</div>
         </div>
         <div class="metric-card">
           <div class="metric-label">Issued (all time)</div>
@@ -144,8 +150,8 @@ const ItemStockPage = {
               : `<span class="muted">${esc(m.refNumber || '—')}</span>`}</td>
           <td class="muted">${esc(m.warehouseName || DEFAULT_WAREHOUSE.name)}</td>
           <td class="text-right" style="font-weight:700;color:${m.type === 'in' ? 'var(--color-success)' : 'var(--color-danger)'};">${m.type === 'in' ? '+' : '−'}${m.qty}</td>
-          <td class="col-amount">₹${formatCurrency(m.rate || 0)}</td>
-          <td class="col-amount">₹${formatCurrency(m.value || 0)}</td>
+          <td class="col-amount">${formatCurrency(m.rate || 0)}</td>
+          <td class="col-amount">${formatCurrency(m.value || 0)}</td>
           <td class="text-right" style="font-weight:600;${(m.balanceAfter || 0) < 0 ? 'color:var(--color-danger);' : ''}">${m.balanceAfter} ${esc(unit)}</td>
           <td class="muted">${esc(m.createdByName || '—')}</td>
         </tr>`).join('')}

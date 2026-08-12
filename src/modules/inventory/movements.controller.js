@@ -25,35 +25,23 @@ const StockLedgerPage = {
         </div>
       </div>
 
-      <div class="card mb-4"><div class="card-body">
-        <div class="form-row-3" style="align-items:end;">
-          <div class="form-group">
-            <label class="form-label">Item</label>
-            <select class="select" id="lg-item"><option value="all">All items</option></select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Direction</label>
-            <select class="select" id="lg-type">
-              <option value="all">In &amp; out</option><option value="in">Stock in</option><option value="out">Stock out</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Reason</label>
-            <select class="select" id="lg-reason">
-              <option value="all">All reasons</option>
-              ${Object.entries(STOCK_REASONS).map(([id, r]) => `<option value="${id}">${r.label}</option>`).join('')}
-            </select>
-          </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px;">
+        <select class="select" id="lg-item" style="width:auto;max-width:200px;"><option value="all">All items</option></select>
+        <select class="select" id="lg-type" style="width:auto;">
+          <option value="all">In &amp; out</option><option value="in">Stock in</option><option value="out">Stock out</option>
+        </select>
+        <select class="select" id="lg-reason" style="width:auto;max-width:180px;">
+          <option value="all">All reasons</option>
+          ${Object.entries(STOCK_REASONS).map(([id, r]) => `<option value="${id}">${r.label}</option>`).join('')}
+        </select>
+        <select class="select" id="lg-wh" style="width:auto;"><option value="all">All locations</option></select>
+        <div style="display:flex;align-items:center;gap:6px;margin-left:auto;flex-wrap:wrap;">
+          <input class="input" type="date" id="lg-from" title="From date" style="width:auto;" />
+          <span style="color:var(--text-tertiary);font-size:12px;">to</span>
+          <input class="input" type="date" id="lg-to" title="To date" style="width:auto;" />
+          <button class="btn btn-ghost btn-sm" onclick="StockLedgerPage.clearFilters()" title="Clear all filters">${Icon.refresh(13)} Reset</button>
         </div>
-        <div class="form-row-3" style="align-items:end;">
-          <div class="form-group">
-            <label class="form-label">Location</label>
-            <select class="select" id="lg-wh"><option value="all">All locations</option></select>
-          </div>
-          <div class="form-group"><label class="form-label">From</label><input class="input" type="date" id="lg-from" /></div>
-          <div class="form-group"><label class="form-label">To</label><input class="input" type="date" id="lg-to" /></div>
-        </div>
-      </div></div>
+      </div>
 
       <div class="grid-3 mb-4" id="lg-metrics">
         ${Array(3).fill('<div class="skeleton" style="height:78px;border-radius:12px;"></div>').join('')}
@@ -63,6 +51,15 @@ const StockLedgerPage = {
     `);
 
     window.StockLedgerPage = this;
+
+    if (!await InventoryService.waitForCompany()) {
+      document.getElementById('lg-sub').textContent = 'No company selected';
+      document.getElementById('lg-table').innerHTML = `<div class="empty-state"><div class="empty-state-icon">${Icon.building(24)}</div>
+        <h3>Set up your company first</h3><p>The stock ledger is kept per company.</p>
+        <a href="#/settings" class="btn btn-primary">Go to Settings</a></div>`;
+      document.getElementById('lg-metrics')?.remove();
+      return;
+    }
 
     try {
       [this._moves, this._items, this._warehouses] = await Promise.all([
@@ -112,8 +109,8 @@ const StockLedgerPage = {
 
     const met = document.getElementById('lg-metrics');
     if (met) met.innerHTML = `
-      <div class="metric-card"><div class="metric-label">Inward</div><div class="metric-value" style="color:var(--color-success);">${Math.round(inQty * 1000) / 1000}</div><div class="metric-subtext">₹${formatCurrencyShort(inVal)} received</div></div>
-      <div class="metric-card"><div class="metric-label">Outward</div><div class="metric-value" style="color:var(--color-danger);">${Math.round(outQty * 1000) / 1000}</div><div class="metric-subtext">₹${formatCurrencyShort(outVal)} issued at cost</div></div>
+      <div class="metric-card"><div class="metric-label">Inward</div><div class="metric-value" style="color:var(--color-success);">${Math.round(inQty * 1000) / 1000}</div><div class="metric-subtext">${formatCurrencyShort(inVal)} received</div></div>
+      <div class="metric-card"><div class="metric-label">Outward</div><div class="metric-value" style="color:var(--color-danger);">${Math.round(outQty * 1000) / 1000}</div><div class="metric-subtext">${formatCurrencyShort(outVal)} issued at cost</div></div>
       <div class="metric-card"><div class="metric-label">Net change</div><div class="metric-value">${Math.round((inQty - outQty) * 1000) / 1000}</div><div class="metric-subtext">units over the filtered period</div></div>`;
 
     const wrap = document.getElementById('lg-table');
@@ -123,7 +120,11 @@ const StockLedgerPage = {
       wrap.innerHTML = `<div class="empty-state"><div class="empty-state-icon">${Icon.history(24)}</div>
         <h3>${this._moves.length === 0 ? 'No stock movements yet' : 'No movements match these filters'}</h3>
         <p>${this._moves.length === 0 ? 'Receive stock or raise an invoice — every quantity change is logged here with a running balance.' : 'Widen the date range or clear a filter.'}</p>
-        ${this._moves.length === 0 ? `<button class="btn btn-primary" onclick="StockLedgerPage.act('in')">Record stock in</button>` : ''}</div>`;
+        ${this._moves.length === 0
+          ? (this._items.length
+              ? `<button class="btn btn-primary" onclick="StockLedgerPage.act('in')">Record stock in</button>`
+              : `<a href="#/inventory" class="btn btn-primary">Set up tracked items</a>`)
+          : `<button class="btn btn-secondary" onclick="StockLedgerPage.clearFilters()">Clear filters</button>`}</div>`;
       return;
     }
 
@@ -141,7 +142,7 @@ const StockLedgerPage = {
               : `<span class="muted">${esc(m.refNumber || '—')}</span>`}</td>
           <td class="muted">${esc(m.warehouseName || DEFAULT_WAREHOUSE.name)}</td>
           <td class="text-right" style="font-weight:700;color:${m.type === 'in' ? 'var(--color-success)' : 'var(--color-danger)'};">${m.type === 'in' ? '+' : '−'}${m.qty} <span style="font-weight:400;color:var(--text-tertiary);font-size:11px;">${esc(m.unit || '')}</span></td>
-          <td class="col-amount">₹${formatCurrency(m.value || 0)}</td>
+          <td class="col-amount">${formatCurrency(m.value || 0)}</td>
           <td class="text-right" style="font-weight:600;${(m.balanceAfter || 0) < 0 ? 'color:var(--color-danger);' : ''}">${m.balanceAfter}</td>
           <td class="muted">${esc(m.createdByName || '—')}</td>
         </tr>`).join('')}
@@ -149,8 +150,15 @@ const StockLedgerPage = {
     </table>
     <div class="card-footer" style="display:flex;justify-content:space-between;align-items:center;">
       <span style="font-size:12px;color:var(--text-tertiary);">Showing ${list.length} of ${this._moves.length}</span>
-      <span style="font-size:12px;font-weight:600;">Inward ₹${formatCurrencyShort(inVal)} · Outward ₹${formatCurrencyShort(outVal)}</span>
+      <span style="font-size:12px;font-weight:600;">Inward ${formatCurrencyShort(inVal)} · Outward ${formatCurrencyShort(outVal)}</span>
     </div></div>`;
+  },
+
+  clearFilters() {
+    this._f = { type: 'all', reason: 'all', productId: 'all', warehouseId: 'all', from: '', to: '' };
+    ['lg-item', 'lg-type', 'lg-reason', 'lg-wh'].forEach(id => { const el = document.getElementById(id); if (el) el.value = 'all'; });
+    ['lg-from', 'lg-to'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+    this._render();
   },
 
   act(mode) {

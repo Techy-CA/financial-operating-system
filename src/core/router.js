@@ -123,12 +123,18 @@ const Router = {
     return { params };
   },
 
+  // Only the most specific matching nav item lights up, so /inventory/movements
+  // highlights "Stock Ledger" without also highlighting "Inventory".
   _updateActive(path) {
-    document.querySelectorAll('.sidebar-item[data-route]').forEach(el => {
+    const items = [...document.querySelectorAll('.sidebar-item[data-route]')];
+    let best = null, bestLen = -1;
+    for (const el of items) {
       const route = el.dataset.route;
-      const isActive = route && (path === route || (route !== '/' && path.startsWith(route + '/')));
-      el.classList.toggle('active', !!isActive);
-    });
+      if (!route) continue;
+      const matches = path === route || (route !== '/' && path.startsWith(route + '/'));
+      if (matches && route.length > bestLen) { best = el; bestLen = route.length; }
+    }
+    items.forEach(el => el.classList.toggle('active', el === best));
   },
 
   render(html) {

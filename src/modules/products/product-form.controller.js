@@ -80,8 +80,11 @@ const ProductFormPage = {
             <div class="card-header">
               <h2 style="display:flex;align-items:center;gap:7px;">${Icon.packages(15)} Stock tracking</h2>
               <div class="card-header-actions">
-                <label class="toggle-wrapper" style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:12.5px;color:var(--text-secondary);">
-                  <input type="checkbox" name="trackInventory" id="track-toggle" ${tracked?'checked':''} style="width:15px;height:15px;accent-color:#1D4ED8;cursor:pointer;" />
+                <label class="toggle-wrapper" style="cursor:pointer;font-size:12.5px;color:var(--text-secondary);">
+                  <span class="toggle">
+                    <input type="checkbox" name="trackInventory" id="track-toggle" ${tracked?'checked':''} />
+                    <span class="toggle-track"></span><span class="toggle-thumb"></span>
+                  </span>
                   Track stock for this item
                 </label>
               </div>
@@ -114,7 +117,7 @@ const ProductFormPage = {
                   ` : `
                     <div style="display:flex;align-items:center;gap:8px;padding:9px 11px;border:1px solid var(--border-subtle);border-radius:9px;background:var(--bg-subtle);">
                       <strong style="font-size:14px;">${p.stockQty ?? 0} ${esc(p.unit || 'Nos')}</strong>
-                      <span style="font-size:11.5px;color:var(--text-tertiary);">avg ₹${formatCurrency(p.avgCost || 0)}</span>
+                      <span style="font-size:11.5px;color:var(--text-tertiary);">avg ${formatCurrency(p.avgCost || 0)}</span>
                       <a href="#/inventory/${esc(id)}" class="btn btn-ghost btn-sm" style="margin-left:auto;">Adjust</a>
                     </div>
                     <div class="form-hint">Quantities can only change through the stock ledger</div>

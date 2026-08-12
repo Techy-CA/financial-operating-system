@@ -39,7 +39,8 @@ const StockModal = {
     this._selected   = opts.item ? InventoryService.decorate(opts.item) : null;
 
     if (this._items.length === 0 && !this._selected) {
-      Toast.error('No tracked items yet. Turn on stock tracking on a product first.');
+      Toast.info('No tracked items yet — switch on stock tracking for a product first');
+      if (!location.hash.startsWith('#/inventory')) location.hash = '#/inventory';
       return;
     }
 
@@ -191,7 +192,7 @@ const StockModal = {
     box.style.display = 'flex';
     box.innerHTML = `
       <span style="color:#475569;">In stock now <strong style="color:#0F172A;">${item.stockQty} ${esc(unit)}</strong>
-        <span style="color:#94A3B8;">· avg ₹${formatCurrency(item.avgCost || 0)}</span></span>
+        <span style="color:#94A3B8;">· avg ${formatCurrency(item.avgCost || 0)}</span></span>
       <span style="font-weight:700;color:${after < 0 ? '#DC2626' : '#0F172A'};">
         ${qty ? `→ ${Math.round(after * 1000) / 1000} ${esc(unit)}${diff !== null && diff !== 0 ? ` (${diff > 0 ? '+' : ''}${diff})` : ''}` : ''}
       </span>`;

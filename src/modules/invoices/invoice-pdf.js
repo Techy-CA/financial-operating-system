@@ -107,7 +107,7 @@ function classicBlue(inv, lineItems, co) {
     <tr class="sub-row"><td colspan="6" class="num" style="color:#666;">Subtotal</td><td class="num">${formatCurrency(inv.totalTaxable||0)}</td><td class="num">${formatCurrency(inv.totalGST||0)}</td><td class="num">${formatCurrency((inv.totalTaxable||0)+(inv.totalGST||0))}</td></tr>
     ${(inv.totalDiscount||0)>0?`<tr><td colspan="8" class="num">Discount</td><td class="num" style="color:red;">-${formatCurrency(inv.totalDiscount)}</td></tr>`:''}
     <tr><td colspan="8" class="num" style="font-size:9px;color:#666;">Round off</td><td class="num" style="font-size:9px;">${formatCurrency(grandTotal-(inv.grandTotal||0))}</td></tr>
-    <tr class="total-row"><td colspan="6">TOTAL</td><td colspan="3" class="num">₹ ${formatCurrency(grandTotal)}</td></tr>
+    <tr class="total-row"><td colspan="6">TOTAL</td><td colspan="3" class="num">${formatCurrency(grandTotal)}</td></tr>
   </tfoot></table>
   <div style="font-size:9.5px;margin:6px 0;"><strong>Amount in words:</strong> ${amountInWords(grandTotal)}</div>
   <div class="bottom">
@@ -193,7 +193,7 @@ function modernDark(inv, lineItems, co) {
     ${rows.map((r,i)=>`<tr ${i%2===1?'class="alt-row"':''}><td>${i+1}</td><td><strong>${r.item.description||'—'}</strong>${r.item.hsn?`<div style="font-size:9px;color:#64748B;">${r.item.hsn}</div>`:''}</td><td>${r.item.hsn||'—'}</td><td class="num">${r.qty} ${r.item.unit||''}</td><td class="num">${formatCurrency(r.rate)}</td><td class="num">${formatCurrency(r.taxable)}</td><td class="num" style="font-size:9px;">${formatCurrency(r.gstAmt)}<div style="font-size:8px;color:#64748B;">${inv.interState?`IGST ${r.item.gstRate}%`:`CGST+SGST ${r.item.gstRate}%`}</div></td><td class="num"><strong>${formatCurrency(r.total)}</strong></td></tr>`).join('')}
   </tbody><tfoot>
     <tr style="border-top:2px solid #E2E8F0;"><td colspan="5" class="num" style="color:#64748B;">Subtotal</td><td class="num">${formatCurrency(inv.totalTaxable||0)}</td><td class="num">${formatCurrency(inv.totalGST||0)}</td><td class="num">${formatCurrency((inv.totalTaxable||0)+(inv.totalGST||0))}</td></tr>
-    <tr class="total-row"><td colspan="5">TOTAL</td><td colspan="3" class="num" style="font-size:16px;">₹ ${formatCurrency(gt)}</td></tr>
+    <tr class="total-row"><td colspan="5">TOTAL</td><td colspan="3" class="num" style="font-size:16px;">${formatCurrency(gt)}</td></tr>
   </tfoot></table>
   <div style="font-size:9.5px;margin:8px 0;padding:8px;background:#F8FAFC;border-radius:6px;"><strong>Amount in words:</strong> ${amountInWords(gt)}</div>
 
@@ -268,7 +268,7 @@ function minimalClean(inv, lineItems, co) {
     ${rows.map((r,i)=>`<tr><td>${i+1}</td><td><strong>${r.item.description||'—'}</strong></td><td style="color:#9CA3AF;">${r.item.hsn||'—'}</td><td class="num">${r.qty}</td><td class="num">${formatCurrency(r.rate)}</td><td class="num">${formatCurrency(r.taxable)}</td><td class="num" style="font-size:9px;">${formatCurrency(r.gstAmt)}</td><td class="num"><strong>${formatCurrency(r.total)}</strong></td></tr>`).join('')}
   </tbody><tfoot>
     <tr><td colspan="5" class="num sub-line" style="padding-top:8px;">Subtotal</td><td class="num sub-line">${formatCurrency(inv.totalTaxable||0)}</td><td class="num sub-line">${formatCurrency(inv.totalGST||0)}</td><td class="num sub-line">${formatCurrency((inv.totalTaxable||0)+(inv.totalGST||0))}</td></tr>
-    <tr class="total-row"><td colspan="5">TOTAL</td><td colspan="3" class="num">₹ ${formatCurrency(gt)}</td></tr>
+    <tr class="total-row"><td colspan="5">TOTAL</td><td colspan="3" class="num">${formatCurrency(gt)}</td></tr>
   </tfoot></table>
   <div style="font-size:9px;margin-top:6px;color:#6B7280;font-style:italic;">${amountInWords(gt)}</div>
 

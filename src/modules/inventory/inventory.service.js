@@ -34,6 +34,20 @@ const mRnd = (v) => Math.round(num(v) * 100)  / 100;    // money — 2 decimals
 
 const InventoryService = {
 
+  /**
+   * Company data is fetched after sign-in, so a page opened by direct URL or a
+   * hard refresh can render before companyId exists. Pages wait on this instead
+   * of throwing "No company selected" at the user.
+   */
+  async waitForCompany(timeout = 5000) {
+    const step = 150;
+    for (let waited = 0; waited < timeout; waited += step) {
+      if (Store.get('companyId')) return true;
+      await new Promise(r => setTimeout(r, step));
+    }
+    return !!Store.get('companyId');
+  },
+
   // ── ITEMS ────────────────────────────────────────────────────────────────
   /** All products that have stock tracking switched on. */
   async listItems() {

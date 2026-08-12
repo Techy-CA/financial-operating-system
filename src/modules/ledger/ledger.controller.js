@@ -93,9 +93,9 @@ const LedgerPage = {
       </div>
 
       <div class="grid-3 mb-5">
-        <div class="metric-card"><div class="metric-label">Total invoiced</div><div class="metric-value">₹${formatCurrencyShort(totalInvoiced)}</div><div class="metric-subtext">${entries.filter(e=>e.tag==='income').length} invoices</div></div>
-        <div class="metric-card"><div class="metric-label">Payments received</div><div class="metric-value success">₹${formatCurrencyShort(totalReceived)}</div></div>
-        <div class="metric-card"><div class="metric-label">Total expenses</div><div class="metric-value danger">₹${formatCurrencyShort(totalExpenses)}</div></div>
+        <div class="metric-card"><div class="metric-label">Total invoiced</div><div class="metric-value">${formatCurrencyShort(totalInvoiced)}</div><div class="metric-subtext">${entries.filter(e=>e.tag==='income').length} invoices</div></div>
+        <div class="metric-card"><div class="metric-label">Payments received</div><div class="metric-value success">${formatCurrencyShort(totalReceived)}</div></div>
+        <div class="metric-card"><div class="metric-label">Total expenses</div><div class="metric-value danger">${formatCurrencyShort(totalExpenses)}</div></div>
       </div>
 
       <div style="background:var(--color-info-light);border:1px solid var(--color-info-mid);border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:13px;color:var(--color-info-text);display:flex;gap:8px;">
@@ -132,9 +132,9 @@ const LedgerPage = {
                   <td><span class="badge ${e.tag==='income'?'badge-info':e.tag==='receipt'?'badge-success':'badge-danger'} badge-dot">${e.type}</span></td>
                   <td style="font-family:var(--font-mono);font-size:11px;color:var(--text-tertiary);">${e.ref || '—'}</td>
                   <td style="font-size:12.5px;">${e.linkId ? `<a href="#/invoices/${e.linkId}" style="color:var(--brand-primary);">${e.description}</a>` : e.description}</td>
-                  <td class="col-amount" style="color:${e.debit>0?'var(--color-info)':'var(--text-disabled)'};">${e.debit>0?'₹'+formatCurrency(e.debit):'—'}</td>
-                  <td class="col-amount" style="color:${e.credit>0?(e.tag==='expense'?'var(--color-danger)':'var(--color-success)'):'var(--text-disabled)'};">${e.credit>0?'₹'+formatCurrency(e.credit):'—'}</td>
-                  <td class="col-amount" style="font-weight:700;color:${e.balance>=0?'var(--text-primary)':'var(--color-danger)'};">₹${formatCurrency(e.balance)}</td>
+                  <td class="col-amount" style="color:${e.debit>0?'var(--color-info)':'var(--text-disabled)'};">${e.debit>0?formatCurrency(e.debit):'—'}</td>
+                  <td class="col-amount" style="color:${e.credit>0?(e.tag==='expense'?'var(--color-danger)':'var(--color-success)'):'var(--text-disabled)'};">${e.credit>0?formatCurrency(e.credit):'—'}</td>
+                  <td class="col-amount" style="font-weight:700;color:${e.balance>=0?'var(--text-primary)':'var(--color-danger)'};">${formatCurrency(e.balance)}</td>
                   <td>
                     ${e.deletable && e.id ? `
                       <button class="btn btn-ghost btn-icon btn-sm" style="color:var(--color-danger);"
@@ -147,9 +147,9 @@ const LedgerPage = {
               <tfoot>
                 <tr style="background:var(--bg-subtle);border-top:2px solid var(--border-default);">
                   <td colspan="4" style="padding:10px 14px;font-weight:700;">Totals</td>
-                  <td class="col-amount" style="font-weight:700;color:var(--color-info);">₹${formatCurrency(totalInvoiced)}</td>
-                  <td class="col-amount" style="font-weight:700;color:var(--color-danger);">₹${formatCurrency(totalExpenses)}</td>
-                  <td class="col-amount" style="font-weight:700;">₹${formatCurrency(totalInvoiced-totalExpenses)}</td>
+                  <td class="col-amount" style="font-weight:700;color:var(--color-info);">${formatCurrency(totalInvoiced)}</td>
+                  <td class="col-amount" style="font-weight:700;color:var(--color-danger);">${formatCurrency(totalExpenses)}</td>
+                  <td class="col-amount" style="font-weight:700;">${formatCurrency(totalInvoiced-totalExpenses)}</td>
                   <td></td>
                 </tr>
               </tfoot>

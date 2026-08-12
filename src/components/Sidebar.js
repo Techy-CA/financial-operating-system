@@ -133,12 +133,18 @@ const Sidebar = {
     });
   },
 
+  // Longest matching route wins — see Router._updateActive
   _highlight() {
-    const path = Router.currentPath();
-    document.querySelectorAll('.sidebar-item[data-route]').forEach(el => {
+    const path  = Router.currentPath();
+    const items = [...document.querySelectorAll('.sidebar-item[data-route]')];
+    let best = null, bestLen = -1;
+    for (const el of items) {
       const r = el.dataset.route;
-      el.classList.toggle('active', !!(r && (path === r || (r.length > 1 && path.startsWith(r + '/')))));
-    });
+      if (!r) continue;
+      const matches = path === r || (r.length > 1 && path.startsWith(r + '/'));
+      if (matches && r.length > bestLen) { best = el; bestLen = r.length; }
+    }
+    items.forEach(el => el.classList.toggle('active', el === best));
   },
 
   // ── COMPANY MODAL ──────────────────────────────────────────────────────────

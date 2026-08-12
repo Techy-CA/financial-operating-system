@@ -48,8 +48,8 @@ const ExpensesPage = {
 
     if (countEl)   countEl.textContent   = `${this._list.length} entries`;
     if (metricsEl) metricsEl.innerHTML   = `
-      <div class="metric-card"><div class="metric-label">This month</div><div class="metric-value">₹${formatCurrencyShort(thisMonth)}</div></div>
-      <div class="metric-card"><div class="metric-label">This FY total</div><div class="metric-value danger">₹${formatCurrencyShort(total)}</div></div>
+      <div class="metric-card"><div class="metric-label">This month</div><div class="metric-value">${formatCurrencyShort(thisMonth)}</div></div>
+      <div class="metric-card"><div class="metric-label">This FY total</div><div class="metric-value danger">${formatCurrencyShort(total)}</div></div>
       <div class="metric-card"><div class="metric-label">Entries</div><div class="metric-value">${this._list.length}</div></div>
     `;
 
@@ -82,7 +82,7 @@ const ExpensesPage = {
                 </td>
                 <td style="font-weight:500;">${e.description||'—'}</td>
                 <td class="muted">${e.vendorName||'—'}</td>
-                <td class="col-amount" style="font-weight:700;">₹${formatCurrency(e.amount||0)}</td>
+                <td class="col-amount" style="font-weight:700;">${formatCurrency(e.amount||0)}</td>
                 <td class="col-actions">
                   <div class="row-actions">
                     <a href="#/expenses/${e.id}/edit" class="btn btn-secondary btn-sm" title="Edit">${Icon.edit(13)} Edit</a>
@@ -94,7 +94,7 @@ const ExpensesPage = {
           </tbody>
         </table>
         <div class="card-footer" style="text-align:right;">
-          Total (filtered): <strong>₹${formatCurrencyShort(filtered.reduce((s,e)=>s+(e.amount||0),0))}</strong>
+          Total (filtered): <strong>${formatCurrencyShort(filtered.reduce((s,e)=>s+(e.amount||0),0))}</strong>
         </div>
       </div>
     `;

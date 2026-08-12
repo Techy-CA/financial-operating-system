@@ -827,6 +827,17 @@
 .skeleton-card  { height: 96px; border-radius: var(--radius-xl); }
 .skeleton-avatar{ width: 32px; height: 32px; border-radius: var(--radius-md); }
 
+/* Inline loading spinner used by every list/table placeholder */
+.spinner-sm {
+  width: 22px;
+  height: 22px;
+  border: 2.5px solid var(--gray-200, #E2E8F0);
+  border-top-color: var(--brand-primary, #1D4ED8);
+  border-radius: 50%;
+  animation: spin 0.75s linear infinite;
+  display: inline-block;
+}
+
 /* ================================================================
    DROPDOWN
    ================================================================ */
