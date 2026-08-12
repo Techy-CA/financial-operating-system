@@ -26,6 +26,11 @@ const InvoiceService = {
   async update(id,data){return DB.update('invoices',id,clean(data));},
 
   async delete(id) {
+    // Return any stock this invoice consumed before the document disappears
+    try{
+      const{default:Inventory}=await import('../inventory/inventory.service.js');
+      await Inventory.reverseInvoiceStock({id});
+    }catch(e){console.warn('[Inventory]',e.message);}
     try{const items=await DB.getAll('invoiceItems',[DB.where('invoiceId','==',id)]);for(const i of items)await DB.delete('invoiceItems',i.id);}catch(e){}
     return DB.delete('invoices',id);
   },
@@ -45,6 +50,7 @@ const InvoiceService = {
       const lineTotal=lineNet*(1+(parseFloat(item.gstRate)||0)/100);
       await DB.create('invoiceItems',clean({
         description: item.description||'',
+        productId:   item.productId||null,
         hsn:         item.hsn||null,
         qty:         parseFloat(item.qty)||0,
         unit:        item.unit||'Nos',

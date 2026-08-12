@@ -68,6 +68,7 @@ financial-os/
 │   │   ├── customers/    # Customer management
 │   │   ├── vendors/      # Vendor management
 │   │   ├── products/     # Product/service catalogue
+│   │   ├── inventory/    # Stock summary, ledger, movements, locations
 │   │   ├── quotations/   # Quotation management
 │   │   ├── collections/  # Receivables & reminders
 │   │   ├── expenses/     # Expense tracking
@@ -93,7 +94,7 @@ financial-os/
 | Admin       | Everything except team delete, billing        |
 | Accountant  | Invoices, expenses, ledger, GST, reports      |
 | Sales       | Customers, quotations, invoices (create/send) |
-| Operations  | Vendors, products, expenses                   |
+| Operations  | Vendors, products, inventory, expenses         |
 | Auditor     | Read-only access to all modules               |
 
 ---
@@ -123,6 +124,34 @@ FIREBASE_STORAGE_BUCKET=
 FIREBASE_MESSAGING_SENDER_ID=
 FIREBASE_APP_ID=
 ```
+
+---
+
+## Inventory
+
+Stock tracking is opt-in per product (**Products → edit → Stock tracking**). Once
+enabled, an item gets a quantity, a moving-average cost and a reorder level.
+
+- **Stock summary** (`#/inventory`) — value at cost, low-stock and out-of-stock
+  counts, per-location balances, CSV export.
+- **Stock ledger** (`#/inventory/movements`) — every inward and outward entry with
+  a running balance, filterable by item, direction, reason, location and date.
+- **Stock in / out / count** — a single dialog for receipts, issues, damage,
+  returns and physical-count corrections.
+- **Automatic sale deduction** — invoicing a tracked product issues the stock.
+  Editing the invoice books only the difference; deleting it returns everything.
+  Drafts hold no stock.
+- **Valuation** — moving weighted average. Inward entries at their own cost,
+  outward entries at the running average.
+- **Locations** — optional warehouses/godowns; balances are kept per location.
+- **Reorder alerts** — surfaced on the inventory page and the dashboard.
+
+Every quantity change is written through `inventory.service.js` in a Firestore
+transaction, so the ledger and the item balance can never drift apart. Nothing
+else writes `stockQty`.
+
+Collections used: `products` (balance + valuation), `stockMovements` (the ledger),
+`warehouses` (locations).
 
 ---
 

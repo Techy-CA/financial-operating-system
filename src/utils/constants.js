@@ -177,3 +177,41 @@ export function getCurrentFY() {
 export const PRODUCT_UNITS = [
   'Nos', 'Pcs', 'Kg', 'Gm', 'L', 'ML', 'Mtr', 'Sqmt', 'Hr', 'Day', 'Month', 'Box', 'Set', 'Pair',
 ];
+
+// ---- Inventory ----
+export const DEFAULT_WAREHOUSE = { id: 'default', name: 'Main Store', isDefault: true };
+
+// Every stock movement carries a reason. `dir` is the direction it is offered
+// as in the UI ('in', 'out' or 'both' for system-generated entries).
+export const STOCK_REASONS = {
+  opening:        { label: 'Opening stock',      dir: 'in',   system: true  },
+  purchase:       { label: 'Purchase',           dir: 'in',   system: false },
+  sale_return:    { label: 'Sales return',       dir: 'in',   system: false },
+  production:     { label: 'Production / Assembly', dir: 'in', system: false },
+  transfer_in:    { label: 'Transfer in',        dir: 'in',   system: false },
+  sale:           { label: 'Sale (invoice)',     dir: 'out',  system: true  },
+  sale_reversal:  { label: 'Invoice revised',    dir: 'out',  system: true  },
+  purchase_return:{ label: 'Purchase return',    dir: 'out',  system: false },
+  damage:         { label: 'Damage / Breakage',  dir: 'out',  system: false },
+  theft:          { label: 'Shrinkage / Theft',  dir: 'out',  system: false },
+  consumption:    { label: 'Internal use',       dir: 'out',  system: false },
+  transfer_out:   { label: 'Transfer out',       dir: 'out',  system: false },
+  adjustment:     { label: 'Stock count adjustment', dir: 'both', system: false },
+};
+
+export const STOCK_REASONS_IN  = Object.entries(STOCK_REASONS).filter(([, r]) => r.dir === 'in'  && !r.system).map(([id, r]) => ({ id, ...r }));
+export const STOCK_REASONS_OUT = Object.entries(STOCK_REASONS).filter(([, r]) => r.dir === 'out' && !r.system).map(([id, r]) => ({ id, ...r }));
+
+export const STOCK_STATUS_LABELS = {
+  in_stock:     'In stock',
+  low_stock:    'Low stock',
+  out_of_stock: 'Out of stock',
+  negative:     'Negative',
+};
+
+export const STOCK_STATUS_BADGE = {
+  in_stock:     'badge badge-success',
+  low_stock:    'badge badge-warning',
+  out_of_stock: 'badge badge-neutral',
+  negative:     'badge badge-danger',
+};

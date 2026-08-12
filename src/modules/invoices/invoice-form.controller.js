@@ -21,7 +21,16 @@ const InvoiceFormPage = {
         DB.getAll('customers',[]).catch(()=>[]),
         DB.getAll('products',[]).catch(()=>[]),
       ]);
-      if(id){invoice=await DB.getOne('invoices',id)||{};if(invoice.items?.length)this._items=invoice.items;}
+      if(id){
+        invoice=await DB.getOne('invoices',id)||{};
+        if(invoice.items?.length)this._items=invoice.items;
+        else{
+          // Line items live in their own collection — load them so an edit
+          // does not silently blank the invoice (and return its stock).
+          const saved=await DB.getAll('invoiceItems',[DB.where('invoiceId','==',id)]).catch(()=>[]);
+          if(saved.length)this._items=saved.sort((a,b)=>(a.position||0)-(b.position||0));
+        }
+      }
     }catch(e){this._customers=[];this._products=[];}
     Topbar.render({breadcrumb:[{label:'Invoices',route:'/invoices'},{label:id?'Edit invoice':'New invoice'}]});
     this._render(invoice);
@@ -145,6 +154,7 @@ const InvoiceFormPage = {
           onblur="setTimeout(()=>InvoiceFormPage.hideDropdown(),200)"
           onfocus="InvoiceFormPage.searchProduct(${i},this.value)"
           onchange="InvoiceFormPage.upd(${i},'description',this.value)" />
+        <div id="stkhint-${i}" style="font-size:10.5px;margin-top:3px;line-height:1.3;"></div>
       </td>
       <td><input class="input" name="hsn_${i}" value="${item.hsn||''}" oninput="InvoiceFormPage.upd(${i},'hsn',this.value)" /></td>
       <td><input class="input" type="number" name="qty_${i}" value="${item.qty||1}" min="0.01" step="0.01" style="text-align:right;" oninput="InvoiceFormPage.upd(${i},'qty',this.value)" /></td>
@@ -194,13 +204,19 @@ const InvoiceFormPage = {
       dd.style.width  = Math.max(rect.width, 260) + 'px';
     }
 
-    dd.innerHTML = matches.map(p => `
+    dd.innerHTML = matches.map(p => {
+      const qty = parseFloat(p.stockQty) || 0;
+      const stock = p.trackInventory
+        ? `<span style="color:${qty <= 0 ? '#DC2626' : (p.reorderLevel && qty <= p.reorderLevel) ? '#B45309' : '#059669'};font-weight:600;">${qty} ${p.unit || 'Nos'} in stock</span>`
+        : '';
+      return `
       <div onclick="InvoiceFormPage.selectProduct(${rowIdx},'${p.id}')"
         style="padding:9px 12px;cursor:pointer;border-bottom:1px solid var(--border-subtle);transition:background 0.1s;"
         onmouseover="this.style.background='#EEF2FF'" onmouseout="this.style.background='white'">
         <div style="font-size:13px;font-weight:600;color:var(--text-primary);">${p.name}</div>
-        <div style="font-size:11px;color:var(--text-tertiary);">${p.hsn||p.sac||''} · ₹${p.rate||0} · GST ${p.gstRate||0}%</div>
-      </div>`).join('');
+        <div style="font-size:11px;color:var(--text-tertiary);">${p.hsn||p.sac||''} · ₹${p.rate||0} · GST ${p.gstRate||0}% ${stock ? `· ${stock}` : ''}</div>
+      </div>`;
+    }).join('');
 
     dd.style.display = 'block';
   },
@@ -210,6 +226,7 @@ const InvoiceFormPage = {
     if (!p) return;
     this._items[rowIdx] = {
       ...this._items[rowIdx],
+      productId: p.id,
       description: p.name,
       hsn: p.hsn || p.sac || '',
       rate: parseFloat(p.rate) || 0,
@@ -244,6 +261,11 @@ const InvoiceFormPage = {
 
   upd(i,f,v){
     this._items[i][f]=['qty','rate','discount','gstRate'].includes(f)?parseFloat(v)||0:v;
+    // Typing over a picked product breaks the link unless the name still matches
+    if(f==='description'){
+      const match=this._products.find(p=>(p.name||'').toLowerCase()===String(v).toLowerCase().trim());
+      this._items[i].productId=match?match.id:null;
+    }
     const item=this._items[i];
     const amt=(item.qty||0)*(item.rate||0)*(1-((item.discount||0)/100));
     const el=document.getElementById(`iamt-${i}`);
@@ -251,7 +273,26 @@ const InvoiceFormPage = {
     this._recalc();
   },
 
-  _recalc(){const box=document.getElementById('totals-box');if(box)box.innerHTML=this._totalsHTML();},
+  /** Live availability note under a line item that is linked to a tracked product. */
+  _stockHint(i){
+    const el=document.getElementById(`stkhint-${i}`);
+    if(!el)return;
+    const item=this._items[i];
+    const p=item?.productId?this._products.find(x=>x.id===item.productId):null;
+    if(!p||!p.trackInventory){el.innerHTML='';return;}
+    const have=parseFloat(p.stockQty)||0;
+    const need=parseFloat(item.qty)||0;
+    const unit=p.unit||'Nos';
+    if(need>have){
+      el.innerHTML=`<span style="color:var(--color-danger);font-weight:600;">Only ${have} ${unit} in stock — ${Math.round((need-have)*1000)/1000} short</span>`;
+    }else{
+      el.innerHTML=`<span style="color:var(--text-tertiary);">${have} ${unit} in stock · ${Math.round((have-need)*1000)/1000} left after this</span>`;
+    }
+  },
+
+  _allStockHints(){this._items.forEach((_,i)=>this._stockHint(i));},
+
+  _recalc(){const box=document.getElementById('totals-box');if(box)box.innerHTML=this._totalsHTML();this._allStockHints();},
 
   _attachListeners(){
     document.getElementById('sel-cust')?.addEventListener('change',e=>{
@@ -327,6 +368,20 @@ const InvoiceFormPage = {
       try{const{default:N}=await import('../../components/Notifications.js');await N.log('invoice',`Invoice ${payload.invoiceNumber||invId} ${action==='sent'?'sent':'saved as draft'}`);}catch(e){}
 
       Toast.success(action==='sent'?'Invoice saved and marked as sent':'Invoice saved as draft');
+
+      // Book the goods movement — drafts release any stock booked earlier
+      try{
+        const{default:Inventory}=await import('../inventory/inventory.service.js');
+        const{applied,warnings}=await Inventory.syncInvoiceStock(
+          {id:invId,invoiceNumber:payload.invoiceNumber,invoiceDate:payload.invoiceDate,status:action},
+          this._items,
+        );
+        if(applied.length){
+          const out=applied.filter(m=>m.type==='out').length;
+          Toast.info(out?`Stock updated for ${out} item${out===1?'':'s'}`:'Stock returned for revised lines');
+        }
+        warnings.forEach(w=>Toast.error(w));
+      }catch(e){console.warn('[Inventory]',e.message);}
 
       // Auto-email when invoice is sent
       if(action==='sent'){

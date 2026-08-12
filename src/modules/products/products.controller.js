@@ -63,7 +63,7 @@ const ProductsPage = {
       return;
     }
     wrap.innerHTML = `<div class="table-wrapper"><table class="data-table">
-      <thead><tr><th>Name</th><th>Type</th><th>HSN/SAC</th><th class="text-right">Rate</th><th class="text-right">GST%</th><th>Unit</th><th class="text-right">Actions</th></tr></thead>
+      <thead><tr><th>Name</th><th>Type</th><th>HSN/SAC</th><th class="text-right">Rate</th><th class="text-right">GST%</th><th>Unit</th><th class="text-right">In stock</th><th class="text-right">Actions</th></tr></thead>
       <tbody>
         ${list.map(p => `<tr>
           <td><div style="font-weight:600;">${p.name || '—'}</div>${p.description ? `<div style="font-size:11px;color:var(--text-tertiary);">${p.description}</div>` : ''}</td>
@@ -72,6 +72,7 @@ const ProductsPage = {
           <td class="col-amount">₹${formatCurrency(p.rate || 0)}</td>
           <td class="text-right muted">${p.gstRate || 0}%</td>
           <td class="muted">${p.unit || 'Nos'}</td>
+          <td class="text-right">${this._stockCell(p)}</td>
           <td class="col-actions"><div class="row-actions">
             <a href="#/products/${p.id}" class="btn btn-ghost btn-icon btn-sm" title="Edit">${Icon.edit(14)}</a>
             <button class="btn btn-ghost btn-icon btn-sm" onclick="ProductsPage.del('${p.id}','${(p.name||'').replace(/'/g,"\\'")}',this)" title="Delete" style="color:var(--color-danger);">${Icon.trash(14)}</button>
@@ -79,6 +80,15 @@ const ProductsPage = {
         </tr>`).join('')}
       </tbody>
     </table></div>`;
+  },
+
+  /** Stock column — only tracked goods carry a balance. */
+  _stockCell(p) {
+    if (!p.trackInventory) return `<span class="muted" style="font-size:11.5px;">Not tracked</span>`;
+    const qty     = parseFloat(p.stockQty) || 0;
+    const reorder = parseFloat(p.reorderLevel) || 0;
+    const tone    = qty < 0 ? 'var(--color-danger)' : qty === 0 ? 'var(--text-tertiary)' : (reorder > 0 && qty <= reorder) ? 'var(--color-warning)' : 'var(--text-primary)';
+    return `<a href="#/inventory/${p.id}" style="font-weight:700;color:${tone};">${qty} <span style="font-weight:400;font-size:11px;color:var(--text-tertiary);">${p.unit || 'Nos'}</span></a>`;
   },
 
   async del(id, name) {

@@ -119,10 +119,9 @@ const InvoiceDetailPage = {
   async delInvoice(){
     if(!confirm(`Delete invoice ${this._inv.invoiceNumber}? Cannot be undone.`))return;
     try{
-      const{default:DB}=await import('../../services/firestore.js');
-      const items=await DB.getAll('invoiceItems',[DB.where('invoiceId','==',this._inv.id)]).catch(()=>[]);
-      for(const i of items) await DB.delete('invoiceItems',i.id);
-      await DB.delete('invoices',this._inv.id);
+      // Svc.delete also returns any stock the invoice had consumed
+      const{default:Svc}=await import('./invoices.service.js');
+      await Svc.delete(this._inv.id);
       Toast.success('Invoice deleted');
       window.location.hash='#/invoices';
     }catch(e){Toast.error('Delete failed: '+e.message);}

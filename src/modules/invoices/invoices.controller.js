@@ -113,10 +113,9 @@ const InvoicesPage = {
   async del(id, num) {
     if (!confirm(`Delete invoice ${num}?`)) return;
     try {
-      const { default: DB } = await import('../../services/firestore.js');
-      const items = await DB.getAll('invoiceItems', [DB.where('invoiceId','==',id)]).catch(()=>[]);
-      for (const item of items) await DB.delete('invoiceItems', item.id);
-      await DB.delete('invoices', id);
+      // Svc.delete also returns any stock the invoice had consumed
+      const { default: Svc } = await import('./invoices.service.js');
+      await Svc.delete(id);
       this._list = this._list.filter(i => i.id !== id);
       this._renderTabs();
       this._filter();

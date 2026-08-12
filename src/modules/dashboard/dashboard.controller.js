@@ -191,6 +191,9 @@ const DashboardPage = {
         </a>
       </div>
 
+      <!-- Low stock (filled in after mount) -->
+      <div id="dash-lowstock"></div>
+
       <!-- Main grid -->
       <div style="display:grid;grid-template-columns:1fr 340px;gap:16px;margin-bottom:16px;">
         <div class="card">
@@ -282,6 +285,37 @@ const DashboardPage = {
 
     window.DashboardPage = this;
     requestAnimationFrame(() => this._drawChart(d.monthly));
+    this._loadLowStock();
+  },
+
+  /** Reorder alerts — loaded after the dashboard paints, silent when all is well. */
+  async _loadLowStock() {
+    const box = document.getElementById('dash-lowstock');
+    if (!box) return;
+    try {
+      const { default: Inventory } = await import('../inventory/inventory.service.js');
+      const items = await Inventory.listItems();
+      const alerts = Inventory.lowStockItems(items).slice(0, 6);
+      if (alerts.length === 0) return;
+      const stats = Inventory.stats(items);
+      box.innerHTML = `
+        <div class="card mb-5" style="border-color:#FDE68A;">
+          <div class="card-header" style="background:#FFFBEB;">
+            <h2 style="display:flex;align-items:center;gap:7px;color:#92400E;">${Icon.alertTriangle(15)} Reorder alerts</h2>
+            <a href="#/inventory" style="font-size:12px;color:var(--brand-primary);text-decoration:none;">Inventory · ₹${formatCurrencyShort(stats.stockValue)} in stock →</a>
+          </div>
+          <div class="card-body" style="display:flex;gap:10px;flex-wrap:wrap;padding:12px 16px;">
+            ${alerts.map(i => `
+              <a href="#/inventory/${i.id}" style="display:flex;align-items:center;gap:9px;border:1px solid var(--border-subtle);border-radius:10px;padding:8px 12px;text-decoration:none;min-width:170px;">
+                <div style="width:8px;height:8px;border-radius:50%;background:${i.stockQty <= 0 ? '#DC2626' : '#F59E0B'};flex-shrink:0;"></div>
+                <div style="min-width:0;">
+                  <div style="font-size:12.5px;font-weight:600;color:var(--text-primary);">${i.name}</div>
+                  <div style="font-size:11px;color:var(--text-tertiary);">${i.stockQty} ${i.unit || 'Nos'} left${i.reorderLevel ? ` · reorder at ${i.reorderLevel}` : ''}</div>
+                </div>
+              </a>`).join('')}
+          </div>
+        </div>`;
+    } catch (e) { /* inventory is optional — never block the dashboard */ }
   },
 
   _drawChart(monthly) {

@@ -184,6 +184,22 @@ const App = {
         P.init();
       }, { auth: true })
 
+      // Inventory  (specific routes must be registered before /inventory/:id)
+      .on('/inventory/movements', async () => {
+        Topbar.render({ breadcrumb: [{ label: 'Inventory', route: '/inventory' }, { label: 'Stock ledger' }] });
+        const { default: P } = await import('../modules/inventory/movements.controller.js');
+        P.init();
+      }, { auth: true })
+      .on('/inventory/:id', async ({ params }) => {
+        const { default: P } = await import('../modules/inventory/item-detail.controller.js');
+        P.init(params.id);
+      }, { auth: true })
+      .on('/inventory', async () => {
+        Topbar.render({ breadcrumb: [{ label: 'Inventory', route: '/inventory' }] });
+        const { default: P } = await import('../modules/inventory/inventory.controller.js');
+        P.init();
+      }, { auth: true })
+
       // Quotations
       .on('/quotations/new', async () => { const { default: P } = await import('../modules/quotations/quotation-form.controller.js'); P.init(null); }, { auth: true })
       .on('/quotations/:id', async ({ params }) => { const { default: P } = await import('../modules/quotations/quotation-form.controller.js'); P.init(params.id); }, { auth: true })

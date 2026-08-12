@@ -88,6 +88,7 @@ const Notifications = {
       if (type?.includes('customer')) return Icon.user(15);
       if (type?.includes('expense'))  return Icon.calculator(15);
       if (type?.includes('vendor'))   return Icon.truck(15);
+      if (type?.includes('inventory'))return Icon.packages(15);
       if (type?.includes('team'))     return Icon.users(15);
       return Icon.clipboard(15);
     };
