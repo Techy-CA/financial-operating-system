@@ -77,6 +77,33 @@ const DB = {
     return doc.id;
   },
 
+  /**
+   * Creates without waiting for the server.
+   *
+   * addDoc() only settles once the write is acknowledged, which never happens
+   * while offline — awaiting it would freeze the caller mid-sale. Here the
+   * document ID is generated on the client and the write is issued but not
+   * awaited, so the record exists locally (and reads back immediately) whether
+   * or not there is a connection. The returned `synced` promise resolves when
+   * the server has it, for callers that care.
+   */
+  async createLocal(colName, data) {
+    const f    = await sdk();
+    const path = colPath(colName).split('/');
+    const ref  = f.doc(f.collection(f.db, ...path));
+    const uid  = Store.get('user')?.uid || null;
+
+    const synced = f.setDoc(ref, clean({
+      ...data,
+      createdAt: f.serverTimestamp(),
+      updatedAt: f.serverTimestamp(),
+      createdBy: uid,
+    }));
+    synced.catch(() => {});   // offline rejections are expected — the cache retries
+
+    return { id: ref.id, synced };
+  },
+
   async update(colName, docId, data) {
     const f    = await sdk();
     const path = colPath(colName).split('/');

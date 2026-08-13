@@ -79,6 +79,12 @@ const App = {
       // Start notifications
       import('../components/Notifications.js').then(m => m.default.start()).catch(() => {});
 
+      // Ctrl/Cmd+K search — binds once, survives navigation
+      import('../components/CommandPalette.js').then(m => m.default.install()).catch(() => {});
+
+      // Offline queue + the pill that shows it draining
+      import('../components/ConnectionStatus.js').then(m => m.default.mount()).catch(() => {});
+
     } catch (e) {
       console.warn('[App]', e.message);
       Store.set('role', 'founder');
@@ -197,6 +203,88 @@ const App = {
       .on('/inventory', async () => {
         Topbar.render({ breadcrumb: [{ label: 'Inventory', route: '/inventory' }] });
         const { default: P } = await import('../modules/inventory/inventory.controller.js');
+        P.init();
+      }, { auth: true })
+
+      // Insights + consistency proof
+      .on('/insights', async () => {
+        Topbar.render({ breadcrumb: [{ label: 'Insights', route: '/insights' }] });
+        const { default: P } = await import('../modules/insights/insights.controller.js');
+        P.init();
+      }, { auth: true })
+      .on('/proof', async () => {
+        Topbar.render({ breadcrumb: [{ label: 'Consistency proof', route: '/proof' }] });
+        const { default: P } = await import('../modules/audit/proof.controller.js');
+        P.init();
+      }, { auth: true })
+
+      // Point of sale  (register must be registered before /pos)
+      .on('/pos/register', async () => {
+        Topbar.render({ breadcrumb: [{ label: 'Point of Sale', route: '/pos' }, { label: 'Register' }] });
+        const { default: P } = await import('../modules/pos/register.controller.js');
+        P.init();
+      }, { auth: true })
+      .on('/pos', async () => {
+        Topbar.render({ breadcrumb: [{ label: 'Point of Sale', route: '/pos' }] });
+        const { default: P } = await import('../modules/pos/pos.controller.js');
+        P.init();
+      }, { auth: true })
+
+      // Purchase bills
+      .on('/purchases/new', async () => {
+        Topbar.render({ breadcrumb: [{ label: 'Purchase Bills', route: '/purchases' }, { label: 'New bill' }] });
+        const { default: P } = await import('../modules/purchases/purchase-form.controller.js');
+        P.init(null);
+      }, { auth: true })
+      .on('/purchases/:id/edit', async ({ params }) => {
+        Topbar.render({ breadcrumb: [{ label: 'Purchase Bills', route: '/purchases' }, { label: 'Edit bill' }] });
+        const { default: P } = await import('../modules/purchases/purchase-form.controller.js');
+        P.init(params.id);
+      }, { auth: true })
+      .on('/purchases', async () => {
+        Topbar.render({ breadcrumb: [{ label: 'Purchase Bills', route: '/purchases' }], actions: `<a href="#/purchases/new" class="btn btn-primary btn-sm">+ New bill</a>` });
+        const { default: P } = await import('../modules/purchases/purchases.controller.js');
+        P.init();
+      }, { auth: true })
+
+      // Credit notes / sales returns
+      .on('/credit-notes/new', async () => {
+        Topbar.render({ breadcrumb: [{ label: 'Credit Notes', route: '/credit-notes' }, { label: 'New credit note' }] });
+        const { default: P } = await import('../modules/credit-notes/credit-note-form.controller.js');
+        P.init(null);
+      }, { auth: true })
+      .on('/credit-notes', async () => {
+        Topbar.render({ breadcrumb: [{ label: 'Credit Notes', route: '/credit-notes' }], actions: `<a href="#/credit-notes/new" class="btn btn-primary btn-sm">+ New credit note</a>` });
+        const { default: P } = await import('../modules/credit-notes/credit-notes.controller.js');
+        P.init();
+      }, { auth: true })
+
+      // Party khata
+      .on('/khata/:type/:id', async ({ params }) => {
+        Topbar.render({ breadcrumb: [{ label: 'Party Khata', route: '/khata' }, { label: 'Statement' }] });
+        const { default: P } = await import('../modules/khata/khata-detail.controller.js');
+        P.init(params.type, params.id);
+      }, { auth: true })
+      .on('/khata', async () => {
+        Topbar.render({ breadcrumb: [{ label: 'Party Khata', route: '/khata' }] });
+        const { default: P } = await import('../modules/khata/khata.controller.js');
+        P.init();
+      }, { auth: true })
+
+      // Staff, attendance, payroll
+      .on('/staff', async () => {
+        Topbar.render({ breadcrumb: [{ label: 'Staff', route: '/staff' }] });
+        const { default: P } = await import('../modules/payroll/staff.controller.js');
+        P.init();
+      }, { auth: true })
+      .on('/attendance', async () => {
+        Topbar.render({ breadcrumb: [{ label: 'Attendance', route: '/attendance' }] });
+        const { default: P } = await import('../modules/payroll/attendance.controller.js');
+        P.init();
+      }, { auth: true })
+      .on('/payroll', async () => {
+        Topbar.render({ breadcrumb: [{ label: 'Payroll', route: '/payroll' }] });
+        const { default: P } = await import('../modules/payroll/payroll.controller.js');
         P.init();
       }, { auth: true })
 

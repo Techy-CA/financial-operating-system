@@ -18,6 +18,8 @@
   <link rel="stylesheet" href="src/styles/reset.css" />
   <link rel="stylesheet" href="src/styles/layout.css" />
   <link rel="stylesheet" href="src/styles/components.css" />
+  <link rel="stylesheet" href="src/styles/pos.css" />
+  <link rel="stylesheet" href="src/styles/modules.css" />
   <link rel="stylesheet" href="src/styles/utilities.css" />
   <link rel="stylesheet" href="src/styles/print.css" />
   <link rel="stylesheet" href="src/styles/responsive.css" />
@@ -103,7 +105,7 @@
     const [
       { initializeApp },
       { getAuth },
-      { getFirestore },
+      firestoreSDK,
       { getStorage },
       { getFunctions },
     ] = await Promise.all([
@@ -120,9 +122,30 @@
     const fbApp       = initializeApp(firebaseConfig);
     window.fbApp      = fbApp;
     window.fbAuth     = getAuth(fbApp);
-    window.fbDB       = getFirestore(fbApp);
     window.fbStorage  = getStorage(fbApp);
     window.fbFunctions= getFunctions(fbApp);
+
+    // Offline-first: the counter must keep billing when the line drops.
+    // An IndexedDB-backed cache serves reads and queues writes locally, then
+    // replays them in order once the connection returns. Multi-tab safe.
+    // Falls back to the plain in-memory client where IndexedDB is unavailable
+    // (private windows, older browsers) rather than failing to boot.
+    const {
+      getFirestore, initializeFirestore,
+      persistentLocalCache, persistentMultipleTabManager,
+    } = firestoreSDK;
+
+    try {
+      window.fbDB = initializeFirestore(fbApp, {
+        localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }),
+      });
+      window.__offlineReady = true;
+      console.log('[FinOS] Offline cache active — sales queue locally when the network drops');
+    } catch (e) {
+      window.fbDB = getFirestore(fbApp);
+      window.__offlineReady = false;
+      console.warn('[FinOS] Offline cache unavailable:', e.message);
+    }
 
     document.getElementById('boot-screen').style.display = 'none';
     document.getElementById('app').style.display = 'flex';

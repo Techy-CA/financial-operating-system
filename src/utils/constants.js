@@ -215,3 +215,108 @@ export const STOCK_STATUS_BADGE = {
   out_of_stock: 'badge badge-neutral',
   negative:     'badge badge-danger',
 };
+
+// ---- Point of Sale ----
+// Tender types accepted at the counter. `countsAsCash` decides whether the
+// amount is expected in the physical drawer at day close.
+export const POS_TENDERS = [
+  { id: 'cash', label: 'Cash',  countsAsCash: true  },
+  { id: 'upi',  label: 'UPI',   countsAsCash: false },
+  { id: 'card', label: 'Card',  countsAsCash: false },
+  { id: 'credit', label: 'Credit (khata)', countsAsCash: false },
+];
+
+export const POS_TENDER_MAP = Object.fromEntries(POS_TENDERS.map(t => [t.id, t]));
+
+// Denominations offered in the cash-count grid at day close.
+export const CASH_DENOMINATIONS = [500, 200, 100, 50, 20, 10, 5, 2, 1];
+
+export const REGISTER_STATUS = { OPEN: 'open', CLOSED: 'closed' };
+
+export const REGISTER_STATUS_BADGE = {
+  open:   'badge badge-success',
+  closed: 'badge badge-neutral',
+};
+
+// ---- Purchase bills ----
+export const BILL_STATUS = {
+  DRAFT:     'draft',
+  RECEIVED:  'received',
+  PARTIAL:   'partial',
+  PAID:      'paid',
+  OVERDUE:   'overdue',
+  CANCELLED: 'cancelled',
+};
+
+export const BILL_STATUS_LABELS = {
+  draft:     'Draft',
+  received:  'Received',
+  partial:   'Partially paid',
+  paid:      'Paid',
+  overdue:   'Overdue',
+  cancelled: 'Cancelled',
+};
+
+export const BILL_STATUS_BADGE = {
+  draft:     'badge badge-neutral',
+  received:  'badge badge-info',
+  partial:   'badge badge-warning',
+  paid:      'badge badge-success',
+  overdue:   'badge badge-danger',
+  cancelled: 'badge badge-neutral',
+};
+
+// ---- Credit notes / sales returns ----
+export const CREDIT_NOTE_REASONS = [
+  { id: 'sales_return',   label: 'Goods returned',        restock: true  },
+  { id: 'damaged',        label: 'Damaged / defective',   restock: false },
+  { id: 'rate_revision',  label: 'Rate revision',         restock: false },
+  { id: 'short_supply',   label: 'Short supply',          restock: false },
+  { id: 'order_cancel',   label: 'Order cancelled',       restock: true  },
+  { id: 'other',          label: 'Other',                 restock: false },
+];
+
+export const CREDIT_NOTE_REASON_MAP = Object.fromEntries(
+  CREDIT_NOTE_REASONS.map(r => [r.id, r])
+);
+
+export const CREDIT_NOTE_STATUS_BADGE = {
+  draft:    'badge badge-neutral',
+  issued:   'badge badge-info',
+  applied:  'badge badge-success',
+  refunded: 'badge badge-purple',
+};
+
+// ---- Staff & payroll ----
+export const SALARY_TYPES = [
+  { id: 'monthly', label: 'Monthly salary',  unit: 'month' },
+  { id: 'daily',   label: 'Daily wage',      unit: 'day'   },
+  { id: 'hourly',  label: 'Hourly wage',     unit: 'hour'  },
+  { id: 'piece',   label: 'Piece rate',      unit: 'piece' },
+];
+
+export const SALARY_TYPE_MAP = Object.fromEntries(SALARY_TYPES.map(s => [s.id, s]));
+
+// Attendance marks. `payFactor` is the fraction of a day's wage earned.
+export const ATTENDANCE_STATUS = {
+  present:   { id: 'present',   label: 'Present',    short: 'P',  payFactor: 1,   color: '#0A7C4A', bg: '#E8F5EE' },
+  half_day:  { id: 'half_day',  label: 'Half day',   short: '½',  payFactor: 0.5, color: '#C27C0E', bg: '#FEF3DC' },
+  paid_leave:{ id: 'paid_leave',label: 'Paid leave', short: 'PL', payFactor: 1,   color: '#2B6CB0', bg: '#EBF4FF' },
+  absent:    { id: 'absent',    label: 'Absent',     short: 'A',  payFactor: 0,   color: '#C53030', bg: '#FEF0F0' },
+  week_off:  { id: 'week_off',  label: 'Week off',   short: 'WO', payFactor: 0,   color: '#718096', bg: '#F1F3F7' },
+  holiday:   { id: 'holiday',   label: 'Holiday',    short: 'H',  payFactor: 1,   color: '#6B46C1', bg: '#FAF5FF' },
+};
+
+export const ATTENDANCE_ORDER = ['present', 'half_day', 'absent', 'paid_leave', 'week_off', 'holiday'];
+
+export const PAYROLL_STATUS_BADGE = {
+  draft:  'badge badge-neutral',
+  paid:   'badge badge-success',
+};
+
+// ---- Party khata (running ledger) ----
+// Positive balance means the party owes the business.
+export const KHATA_ENTRY_TYPES = {
+  gave:  { id: 'gave',  label: 'You gave',  sign: +1, color: '#C53030' },
+  got:   { id: 'got',   label: 'You got',   sign: -1, color: '#0A7C4A' },
+};
